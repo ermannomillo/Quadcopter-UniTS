@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "motor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,20 +64,23 @@ static void MX_TIM4_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM15_Init(void);
 /* USER CODE BEGIN PFP */
-volatile float rc_comm_temp[4];
+volatile uint32_t motor_pwm[4];
 
+volatile uint32_t cycle_rc_0 = 0;
+volatile uint32_t cycle_rc_1 = 0;
+volatile uint32_t cycle_rc_2 = 0;
+volatile uint32_t cycle_rc_3 = 0;
 
-volatile uint32_t CycleTime0 = 0;
-volatile uint32_t Period0 = 0;
+volatile uint32_t period_rc_0 = 0;
+volatile uint32_t period_rc_1 = 0;
+volatile uint32_t period_rc_2 = 0;
+volatile uint32_t period_rc_3 = 0;
 
-volatile uint32_t CycleTime1 = 0;
-volatile uint32_t Period1 = 0;
+volatile float channel_mag_0 = 0;
+volatile float channel_mag_1 = 0;
+volatile float channel_mag_2 = 0;
+volatile float channel_mag_3 = 0;
 
-volatile uint32_t CycleTime2 = 0;
-volatile uint32_t Period2 = 0;
-
-volatile uint32_t CycleTime3 = 0;
-volatile uint32_t Period3 = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -137,7 +140,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int count = 0;
+  //int count = 0;
+  set_motor_pwm_zero( *motor_pwm);
+  set_motor_pwm(*motor_pwm);
 
   while (1)
   {
@@ -776,11 +781,11 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
     if (htim->Instance == TIM3)
     {
 
-        CycleTime0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-        Period0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-    	if (CycleTime0 > 1990 && CycleTime < 2010 && Period0 > 0 && CycleTime0 > Period0 ) {
-
-    		rc_comm_temp[1] =  (float) Period0 / (float) CycleTime0;
+        cycle_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+        period_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+    	if (cycle_rc_0 > 1990 && CycleTime < 2010 && period_rc_0 > 0 && cycle_rc_0 > period_rc_0 ) {
+    		channel_mag_0 = (float) period_rc_0 / (float) cycle_rc_0;
+    		motor_pwm[0] =(uint32_t) MOTOR_MAX_PWM_VALUE * channel_mag_0 + (1-channel_mag_0)*MOTOR_MIN_PWM_VALUE ;
     		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
     		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
@@ -788,27 +793,27 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
     }
 
     if (htim->Instance == TIM4)
-        {
+    {
 
-            CycleTime1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-            Period1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-        	if (CycleTime1 > 1990 && CycleTime1 < 2010 && Period1 > 0 && CycleTime1 > Period1) {
-
-        		rc_comm_temp[1] =   (float) Period1 / (float) CycleTime1;
+            cycle_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+            period_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+        	if (cycle_rc_1 > 1990 && cycle_rc_1 < 2010 && period_rc_1 > 0 && cycle_rc_1 > period_rc_1) {
+        		channel_mag_1 = (float) period_rc_1 / (float) cycle_rc_1;
+        		motor_pwm[1] =(uint32_t) MOTOR_MAX_PWM_VALUE * channel_mag_1 + (1-channel_mag_1)*MOTOR_MIN_PWM_VALUE ;
         		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
         		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
         	}
-        }
+    }
 
     if (htim->Instance == TIM5)
             {
 
-                CycleTime2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-                Period2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-            	if (CycleTime2 > 1990 && CycleTime2 < 2010 && Period2 > 0 && CycleTime2 > Period2) {
-
-            		rc_comm_temp[2] =   (float) Period2 / (float) CycleTime2;
+                cycle_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+                period_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+            	if (cycle_rc_2 > 1990 && cycle_rc_2 < 2010 && period_rc_2 > 0 && cycle_rc_2 > period_rc_2) {
+            		channel_mag_2 = (float) period_rc_2 / (float) cycle_rc_2;
+            		motor_pwm[2] =(uint32_t) MOTOR_MAX_PWM_VALUE * channel_mag_2 + (1-channel_mag_2)*MOTOR_MIN_PWM_VALUE ;
             		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
             		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
@@ -817,11 +822,11 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
     if (htim->Instance == TIM15)
             {
 
-                CycleTime3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-                Period3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-            	if (CycleTime3 > 1990 && CycleTime3 < 2010 && Period3 > 0 && CycleTime3 > Period3) {
-
-            		rc_comm_temp[3] =   (float) Period3 / (float) CycleTime3;
+                cycle_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+                period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+            	if (cycle_rc_3 > 1990 && cycle_rc_3 < 2010 && period_rc_3 > 0 && cycle_rc_3 > period_rc_3) {
+            		channel_mag_3 = (float) period_rc_3 / (float) cycle_rc_3;
+            		motor_pwm[3] =(uint32_t) MOTOR_MAX_PWM_VALUE * channel_mag_3 + (1-channel_mag_3)*MOTOR_MIN_PWM_VALUE ;
             		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
             		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
