@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := Lab
+BUILD_ARTIFACT_NAME := Quadcopter_UniTS
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-Lab.elf \
+Quadcopter_UniTS.elf \
 
 MAP_FILES += \
-Lab.map \
+Quadcopter_UniTS.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-Lab.list \
+Quadcopter_UniTS.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: Lab.elf secondary-outputs
+main-build: Quadcopter_UniTS.elf secondary-outputs
 
 # Tool invocations
-Lab.elf Lab.map: $(OBJS) $(USER_OBJS) /home/ahab/STM32CubeIDE/workspace_1.15.1/Quadcopter/STM32H7A3ZITXQ_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Lab.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/ahab/STM32CubeIDE/workspace_1.15.1/Quadcopter/STM32H7A3ZITXQ_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Quadcopter_UniTS.elf Quadcopter_UniTS.map: $(OBJS) $(USER_OBJS) /home/ahab/git/repository/Quadcopter_UniTS/STM32H7A3ZITXQ_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Quadcopter_UniTS.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/ahab/git/repository/Quadcopter_UniTS/STM32H7A3ZITXQ_FLASH.ld" --specs=nosys.specs -Wl,-Map="Quadcopter_UniTS.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Lab.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Lab.list"
+Quadcopter_UniTS.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Quadcopter_UniTS.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) Lab.elf Lab.list Lab.map default.size.stdout
+	-$(RM) Quadcopter_UniTS.elf Quadcopter_UniTS.list Quadcopter_UniTS.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

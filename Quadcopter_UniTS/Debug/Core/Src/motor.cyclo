@@ -1,0 +1,2 @@
+../Core/Src/motor.c:6:6:set_motor_pwm	9
+../Core/Src/motor.c:38:6:set_motor_pwm_zero	1
