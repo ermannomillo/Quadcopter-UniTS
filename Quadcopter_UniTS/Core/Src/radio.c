@@ -29,11 +29,11 @@ void get_target_euler(float euler_rc[], float rc_comm[])
     else if (t1 < -RC_FULLSCALE)
         t1 = - RC_FULLSCALE;
 
-    if(t1 > EULER_Z_TH)
+    if(t1 > YAW_DEAD_THR)
     {
         euler_rc[3] = euler_rc[3] + max_yaw_rad;
     }
-    else if(t1 < -EULER_Z_TH)
+    else if(t1 < -YAW_DEAD_THR)
     {
         euler_rc[3] = euler_rc[3] - max_yaw_rad;
     }

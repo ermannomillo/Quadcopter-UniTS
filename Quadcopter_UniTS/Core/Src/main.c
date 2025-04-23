@@ -65,8 +65,10 @@ static void MX_TIM4_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM15_Init(void);
 /* USER CODE BEGIN PFP */
+
 float rc_comm_temp[4];
 float rc_ref_euler[3];
+uint32_t motor_pwm[4];
 
 volatile uint32_t cycle_rc_0 = 0;
 volatile uint32_t cycle_rc_1 = 0;
@@ -109,6 +111,11 @@ int main(void)
 	rc_ref_euler[1] =  0;
 	rc_ref_euler[3] =  0;
 
+	rc_comm_temp[0] = 0;
+	rc_comm_temp[1] = 0;
+	rc_comm_temp[2] = 0;
+	rc_comm_temp[3] = 0;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -148,8 +155,7 @@ int main(void)
   //int count = 0;
 
 
-  set_motor_pwm_zero( rc_comm_temp);
-  set_motor_pwm(rc_comm_temp);
+  set_motor_pwm_zero(motor_pwm);
 
   while (1)
   {
@@ -184,6 +190,14 @@ int main(void)
 		  HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
 
 		  get_target_euler(rc_ref_euler, rc_comm_temp);
+
+		  /*
+		   * ---------------
+		   * PID
+		   * ---------------
+		   */
+
+		  set_motor_pwm(motor_pwm);
   }
   /* USER CODE END 3 */
 }
@@ -794,7 +808,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
         period_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
     	if (cycle_rc_0 > 1990 && cycle_rc_0 < 2010 && period_rc_0 > 0 && cycle_rc_0 > period_rc_0 ) {
     		channel_mag_0 = (float) period_rc_0 / (float) cycle_rc_0;
-    		rc_comm_temp[0] = channel_mag_0 *  RC_FULLSCALE;
+    		rc_comm_temp[0] = (channel_mag_0 - 0.5) * 2 * RC_FULLSCALE;
     		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
     		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
@@ -808,7 +822,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
             period_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
         	if (cycle_rc_1 > 1990 && cycle_rc_1 < 2010 && period_rc_1 > 0 && cycle_rc_1 > period_rc_1) {
         		channel_mag_1 = (float) period_rc_1 / (float) cycle_rc_1;
-        		rc_comm_temp[1] = channel_mag_1  *  RC_FULLSCALE;
+        		rc_comm_temp[1] = (channel_mag_1 - 0.5) * 2 * RC_FULLSCALE;
         		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
         		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
@@ -822,7 +836,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
                 period_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
             	if (cycle_rc_2 > 1990 && cycle_rc_2 < 2010 && period_rc_2 > 0 && cycle_rc_2 > period_rc_2) {
             		channel_mag_2 = (float) period_rc_2 / (float) cycle_rc_2;
-            		rc_comm_temp[2] =channel_mag_2 * RC_FULLSCALE;
+            		rc_comm_temp[2] = (channel_mag_2 - 0.5) * 2 * RC_FULLSCALE;
             		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
             		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
@@ -835,7 +849,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
                 period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
             	if (cycle_rc_3 > 1990 && cycle_rc_3 < 2010 && period_rc_3 > 0 && cycle_rc_3 > period_rc_3) {
             		channel_mag_3 = (float) period_rc_3 / (float) cycle_rc_3;
-            		rc_comm_temp[3] =  channel_mag_3 *  RC_FULLSCALE;
+            		rc_comm_temp[3] =  channel_mag_3 * RC_FULLSCALE;
             		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
             		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
