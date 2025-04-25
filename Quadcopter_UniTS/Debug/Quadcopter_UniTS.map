@@ -38,6 +38,22 @@ Archive member included to satisfy reference by file (symbol)
                               /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libc_nano.a(libc_a-findfp.o) (_fflush_r)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libc_nano.a(libc_a-sbrkr.o)
                               /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libc_nano.a(libc_a-mallocr.o) (_sbrk_r)
+/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o)
+                              ./Core/Src/quaternion.o (asin)
+/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_atan2.o)
+                              ./Core/Src/quaternion.o (atan2)
+/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_fabs.o)
+                              /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o) (fabs)
+/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_nan.o)
+                              /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o) (nan)
+/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_asin.o)
+                              /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o) (__ieee754_asin)
+/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+                              /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_atan2.o) (__ieee754_atan2)
+/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+                              /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o) (atan)
+/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_sqrt.o)
+                              /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_asin.o) (__ieee754_sqrt)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+dp/hard/libgcc.a(_aeabi_uldivmod.o)
                               ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.o (__aeabi_uldivmod)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+dp/hard/libgcc.a(_udivmoddi4.o)
@@ -130,6 +146,30 @@ Discarded input sections
  .text.ITM_SendChar
                 0x00000000       0x4e ./Core/Src/main.o
  .text._write   0x00000000       0x38 ./Core/Src/main.o
+ .group         0x00000000        0xc ./Core/Src/math_extension.o
+ .group         0x00000000        0xc ./Core/Src/math_extension.o
+ .text          0x00000000        0x0 ./Core/Src/math_extension.o
+ .data          0x00000000        0x0 ./Core/Src/math_extension.o
+ .bss           0x00000000        0x0 ./Core/Src/math_extension.o
+ .text.babyl_sqrt
+                0x00000000       0x64 ./Core/Src/math_extension.o
+ .text.fast_inv_sqrt
+                0x00000000       0x78 ./Core/Src/math_extension.o
+ .debug_info    0x00000000       0xd7 ./Core/Src/math_extension.o
+ .debug_abbrev  0x00000000       0xa0 ./Core/Src/math_extension.o
+ .debug_aranges
+                0x00000000       0x28 ./Core/Src/math_extension.o
+ .debug_rnglists
+                0x00000000       0x19 ./Core/Src/math_extension.o
+ .debug_macro   0x00000000       0x1a ./Core/Src/math_extension.o
+ .debug_macro   0x00000000      0xacc ./Core/Src/math_extension.o
+ .debug_macro   0x00000000       0x10 ./Core/Src/math_extension.o
+ .debug_line    0x00000000       0xe7 ./Core/Src/math_extension.o
+ .debug_str     0x00000000     0x2e9c ./Core/Src/math_extension.o
+ .comment       0x00000000       0x44 ./Core/Src/math_extension.o
+ .debug_frame   0x00000000       0x60 ./Core/Src/math_extension.o
+ .ARM.attributes
+                0x00000000       0x32 ./Core/Src/math_extension.o
  .group         0x00000000        0xc ./Core/Src/motor.o
  .group         0x00000000        0xc ./Core/Src/motor.o
  .group         0x00000000        0xc ./Core/Src/motor.o
@@ -258,6 +298,158 @@ Discarded input sections
  .debug_macro   0x00000000      0x693 ./Core/Src/motor.o
  .debug_macro   0x00000000       0xa6 ./Core/Src/motor.o
  .debug_macro   0x00000000      0x5be ./Core/Src/motor.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .group         0x00000000        0xc ./Core/Src/quaternion.o
+ .text          0x00000000        0x0 ./Core/Src/quaternion.o
+ .data          0x00000000        0x0 ./Core/Src/quaternion.o
+ .bss           0x00000000        0x0 ./Core/Src/quaternion.o
+ .text.QuaternionNorm
+                0x00000000       0xd0 ./Core/Src/quaternion.o
+ .text.multiply_quat
+                0x00000000      0x1a6 ./Core/Src/quaternion.o
+ .text.rotate_quat
+                0x00000000      0x25a ./Core/Src/quaternion.o
+ .text.conjugate_quat
+                0x00000000       0x5a ./Core/Src/quaternion.o
+ .text.quat_to_euler
+                0x00000000      0x15e ./Core/Src/quaternion.o
+ .debug_info    0x00000000      0x366 ./Core/Src/quaternion.o
+ .debug_abbrev  0x00000000       0xda ./Core/Src/quaternion.o
+ .debug_aranges
+                0x00000000       0x40 ./Core/Src/quaternion.o
+ .debug_rnglists
+                0x00000000       0x2f ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x2c1 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0xacc ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x238 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x2e ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x42 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x22 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x8e ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x51 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x103 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x6a ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x1df ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x1c ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x22 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0xfb ./Core/Src/quaternion.o
+ .debug_macro   0x00000000     0x1305 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x11f ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x27 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000    0x1e941 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x6d ./Core/Src/quaternion.o
+ .debug_macro   0x00000000     0x3d80 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x189 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x61 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x29 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x43 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x34 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x16 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x43 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x34 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x10 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x58 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x8e ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x1c ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x177 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x369 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x19b ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x5d ./Core/Src/quaternion.o
+ .debug_macro   0x00000000     0x24ee ./Core/Src/quaternion.o
+ .debug_macro   0x00000000     0x103a ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x154 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x114 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x3d5 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0xac ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x70a ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x20c ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x66 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x3c9 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x3eb ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x275 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x6c8 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x520 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x58 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x4a ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x22c ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x67 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0xa5 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x1bd ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x2dc ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x35 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0xb24 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x29f ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x693 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0xa6 ./Core/Src/quaternion.o
+ .debug_macro   0x00000000      0x5be ./Core/Src/quaternion.o
+ .debug_macro   0x00000000       0x10 ./Core/Src/quaternion.o
+ .debug_line    0x00000000      0xb07 ./Core/Src/quaternion.o
+ .debug_str     0x00000000   0x13930c ./Core/Src/quaternion.o
+ .comment       0x00000000       0x44 ./Core/Src/quaternion.o
+ .debug_frame   0x00000000       0xd0 ./Core/Src/quaternion.o
+ .ARM.attributes
+                0x00000000       0x32 ./Core/Src/quaternion.o
  .group         0x00000000        0xc ./Core/Src/radio.o
  .group         0x00000000        0xc ./Core/Src/radio.o
  .text          0x00000000        0x0 ./Core/Src/radio.o
@@ -4889,6 +5081,75 @@ Discarded input sections
  .debug_frame   0x00000000       0x2c /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libc_nano.a(libc_a-sbrkr.o)
  .ARM.attributes
                 0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libc_nano.a(libc_a-sbrkr.o)
+ .text          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o)
+ .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o)
+ .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o)
+ .rodata.asin.str1.1
+                0x00000000        0x1 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o)
+ .text.asin     0x00000000       0x58 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o)
+ .debug_frame   0x00000000       0x54 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o)
+ .ARM.attributes
+                0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_asin.o)
+ .text          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_atan2.o)
+ .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_atan2.o)
+ .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_atan2.o)
+ .text.atan2    0x00000000        0x4 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_atan2.o)
+ .debug_frame   0x00000000       0x20 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_atan2.o)
+ .ARM.attributes
+                0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-w_atan2.o)
+ .text          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_fabs.o)
+ .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_fabs.o)
+ .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_fabs.o)
+ .text.fabs     0x00000000       0x10 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_fabs.o)
+ .debug_frame   0x00000000       0x20 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_fabs.o)
+ .ARM.attributes
+                0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_fabs.o)
+ .text          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_nan.o)
+ .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_nan.o)
+ .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_nan.o)
+ .text.nan      0x00000000       0x10 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_nan.o)
+ .debug_frame   0x00000000       0x20 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_nan.o)
+ .ARM.attributes
+                0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_nan.o)
+ .text          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_asin.o)
+ .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_asin.o)
+ .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_asin.o)
+ .text.__ieee754_asin
+                0x00000000      0x21c /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_asin.o)
+ .debug_frame   0x00000000       0x54 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_asin.o)
+ .ARM.attributes
+                0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_asin.o)
+ .text          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+ .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+ .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+ .text.__ieee754_atan2
+                0x00000000      0x184 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+ .rodata.CSWTCH.9
+                0x00000000       0x18 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+ .rodata.CSWTCH.8
+                0x00000000       0x18 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+ .debug_frame   0x00000000       0x3c /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+ .ARM.attributes
+                0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_atan2.o)
+ .text          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+ .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+ .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+ .text.atan     0x00000000      0x1f4 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+ .rodata.atanlo
+                0x00000000       0x20 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+ .rodata.atanhi
+                0x00000000       0x20 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+ .debug_frame   0x00000000       0x2c /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+ .ARM.attributes
+                0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-s_atan.o)
+ .text          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_sqrt.o)
+ .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_sqrt.o)
+ .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_sqrt.o)
+ .text.__ieee754_sqrt
+                0x00000000        0x6 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_sqrt.o)
+ .debug_frame   0x00000000       0x20 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_sqrt.o)
+ .ARM.attributes
+                0x00000000       0x32 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/libm.a(libm_a-e_sqrt.o)
  .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+dp/hard/libgcc.a(_aeabi_uldivmod.o)
  .bss           0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+dp/hard/libgcc.a(_aeabi_uldivmod.o)
  .data          0x00000000        0x0 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+dp/hard/libgcc.a(_udivmoddi4.o)
@@ -4925,7 +5186,9 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
 LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+dp/hard/crtbegin.o
 LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+dp/hard/crt0.o
 LOAD ./Core/Src/main.o
+LOAD ./Core/Src/math_extension.o
 LOAD ./Core/Src/motor.o
+LOAD ./Core/Src/quaternion.o
 LOAD ./Core/Src/radio.o
 LOAD ./Core/Src/stm32h7xx_hal_msp.o
 LOAD ./Core/Src/stm32h7xx_it.o
@@ -5925,40 +6188,40 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_line    0x0000faa6     0x3eb8 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.o
  .debug_line    0x0001395e      0xe69 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.o
 
-.debug_str      0x00000000   0x13eeca
- .debug_str     0x00000000   0x13a516 ./Core/Src/main.o
-                             0x13aaf4 (size before relaxing)
- .debug_str     0x0013a516       0x14 ./Core/Src/motor.o
-                             0x1398dc (size before relaxing)
- .debug_str     0x0013a52a       0x4c ./Core/Src/radio.o
+.debug_str      0x00000000   0x13eebe
+ .debug_str     0x00000000   0x13a50a ./Core/Src/main.o
+                             0x13aae8 (size before relaxing)
+ .debug_str     0x0013a50a       0x14 ./Core/Src/motor.o
+                             0x1398d0 (size before relaxing)
+ .debug_str     0x0013a51e       0x4c ./Core/Src/radio.o
                                0x2f39 (size before relaxing)
- .debug_str     0x0013a576      0xab0 ./Core/Src/stm32h7xx_hal_msp.o
+ .debug_str     0x0013a56a      0xab0 ./Core/Src/stm32h7xx_hal_msp.o
                              0x13ad34 (size before relaxing)
- .debug_str     0x0013b026      0x11d ./Core/Src/stm32h7xx_it.o
+ .debug_str     0x0013b01a      0x11d ./Core/Src/stm32h7xx_it.o
                              0x139ca6 (size before relaxing)
- .debug_str     0x0013b143      0x30e ./Core/Src/system_stm32h7xx.o
+ .debug_str     0x0013b137      0x30e ./Core/Src/system_stm32h7xx.o
                              0x1397a7 (size before relaxing)
- .debug_str     0x0013b451       0x45 ./Core/Startup/startup_stm32h7a3zitxq.o
+ .debug_str     0x0013b445       0x45 ./Core/Startup/startup_stm32h7a3zitxq.o
                                  0x76 (size before relaxing)
- .debug_str     0x0013b496      0x7f7 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
+ .debug_str     0x0013b48a      0x7f7 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
                              0x13a67b (size before relaxing)
- .debug_str     0x0013bc8d      0x35a ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.o
+ .debug_str     0x0013bc81      0x35a ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.o
                              0x13a0c3 (size before relaxing)
- .debug_str     0x0013bfe7       0xec ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.o
+ .debug_str     0x0013bfdb       0xec ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.o
                              0x139758 (size before relaxing)
- .debug_str     0x0013c0d3      0x756 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.o
+ .debug_str     0x0013c0c7      0x756 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.o
                              0x139cdd (size before relaxing)
- .debug_str     0x0013c829      0x22e ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.o
+ .debug_str     0x0013c81d      0x22e ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.o
                              0x139b80 (size before relaxing)
- .debug_str     0x0013ca57      0x623 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.o
+ .debug_str     0x0013ca4b      0x623 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.o
                              0x13a015 (size before relaxing)
- .debug_str     0x0013d07a      0xc8c ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.o
+ .debug_str     0x0013d06e      0xc8c ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.o
                              0x13a8ed (size before relaxing)
- .debug_str     0x0013dd06      0x50c ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.o
+ .debug_str     0x0013dcfa      0x50c ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.o
                              0x13a29a (size before relaxing)
- .debug_str     0x0013e212      0xa52 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.o
+ .debug_str     0x0013e206      0xa52 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.o
                              0x13a6b0 (size before relaxing)
- .debug_str     0x0013ec64      0x266 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.o
+ .debug_str     0x0013ec58      0x266 ./Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.o
                              0x139c4f (size before relaxing)
 
 .comment        0x00000000       0x43

@@ -1,0 +1,2 @@
+../Core/Src/math_extension.c:4:7:babyl_sqrt	1
+../Core/Src/math_extension.c:25:7:fast_inv_sqrt	1

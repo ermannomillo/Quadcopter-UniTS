@@ -4,7 +4,6 @@
 
 #define RC_FULLSCALE        1000
 
-
 #define PI  3.141592654f
 
 #define PITCH_MAX_DEG   30
