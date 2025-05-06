@@ -5,31 +5,31 @@ extern TIM_HandleTypeDef htim1;
 
 void set_motor_pwm(uint32_t motor_pwm[])
 {
-  if (motor_pwm[0] >= MOTOR_MAX_PWM_VALUE)
-	  htim1.Instance->CCR1 = MOTOR_MAX_PWM_VALUE;
-  else if (motor_pwm[0] <= MOTOR_MIN_PWM_VALUE)
-	  htim1.Instance->CCR1 = MOTOR_MIN_PWM_VALUE;
+  if (motor_pwm[0] >= MOTOR_MAX_PWM)
+	  htim1.Instance->CCR1 = MOTOR_MAX_PWM;
+  else if (motor_pwm[0] <= MOTOR_MIN_PWM)
+	  htim1.Instance->CCR1 = MOTOR_MIN_PWM;
   else
 	  htim1.Instance->CCR1 = motor_pwm[0] ;
   
-  if (motor_pwm[1] >= MOTOR_MAX_PWM_VALUE)
-	  htim1.Instance->CCR2 = MOTOR_MAX_PWM_VALUE;
-  else if (motor_pwm[1] <= MOTOR_MIN_PWM_VALUE)
-	  htim1.Instance->CCR2 = MOTOR_MIN_PWM_VALUE;
+  if (motor_pwm[1] >= MOTOR_MAX_PWM)
+	  htim1.Instance->CCR2 = MOTOR_MAX_PWM;
+  else if (motor_pwm[1] <= MOTOR_MIN_PWM)
+	  htim1.Instance->CCR2 = MOTOR_MIN_PWM;
   else
 	  htim1.Instance->CCR2 =  motor_pwm[1] ;
   
-  if (motor_pwm[2] >= MOTOR_MAX_PWM_VALUE)
-	  htim1.Instance->CCR3 = MOTOR_MAX_PWM_VALUE;
-  else if (motor_pwm[2] <= MOTOR_MIN_PWM_VALUE)
-	  htim1.Instance->CCR3 = MOTOR_MIN_PWM_VALUE;
+  if (motor_pwm[2] >= MOTOR_MAX_PWM)
+	  htim1.Instance->CCR3 = MOTOR_MAX_PWM;
+  else if (motor_pwm[2] <= MOTOR_MIN_PWM)
+	  htim1.Instance->CCR3 = MOTOR_MIN_PWM;
   else
 	  htim1.Instance->CCR3 =  motor_pwm[2] ;
   
-  if (motor_pwm[3] >= MOTOR_MAX_PWM_VALUE)
-	  htim1.Instance->CCR4 = MOTOR_MAX_PWM_VALUE;
-  else if (motor_pwm[3]  <= MOTOR_MIN_PWM_VALUE)
-	  htim1.Instance->CCR4 = MOTOR_MIN_PWM_VALUE;
+  if (motor_pwm[3] >= MOTOR_MAX_PWM)
+	  htim1.Instance->CCR4 = MOTOR_MAX_PWM;
+  else if (motor_pwm[3]  <= MOTOR_MIN_PWM)
+	  htim1.Instance->CCR4 = MOTOR_MIN_PWM;
   else
 	  htim1.Instance->CCR4 = motor_pwm[3] ;
 }

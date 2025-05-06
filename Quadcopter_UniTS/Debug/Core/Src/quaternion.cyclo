@@ -1,0 +1,5 @@
+../Core/Src/quaternion.c:4:6:QuaternionNorm	1
+../Core/Src/quaternion.c:19:6:multiply_quat	1
+../Core/Src/quaternion.c:38:6:rotate_quat	1
+../Core/Src/quaternion.c:65:6:conjugate_quat	1
+../Core/Src/quaternion.c:76:6:quat_to_euler	1
