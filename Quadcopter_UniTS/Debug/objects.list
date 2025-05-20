@@ -1,3 +1,5 @@
+"./Core/Src/attitude.o"
+"./Core/Src/control.o"
 "./Core/Src/main.o"
 "./Core/Src/math_extension.o"
 "./Core/Src/motor.o"

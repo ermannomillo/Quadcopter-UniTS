@@ -1,101 +1,101 @@
 #include "quaternion.h"
 #include <math.h>
 
-void QuaternionNorm(float q[])
+void norm_quat(Quaternion *q)
 {
     float norm;
 
-    norm = fast_inv_sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
-    q[0] *= norm;
-    q[1] *= norm;
-    q[2] *= norm;
-    q[3] *= norm;
+    norm = fast_inv_sqrt(q->q0*q->q0 + q->q1*q->q1 + q->q2*q->q2 + q->q3*q->q3);
+    q->q0 *= norm;
+    q->q1 *= norm;
+    q->q2 *= norm;
+    q->q3 *= norm;
 }
 
 /*
- * Quaternion Multiplay - qo = qa * qb
+ * Quaternion Multiply - qo = qa * qb
  * note - qo can be different from qa/qb, or the same as qa/qb
  */
-void multiply_quat(float qa[], float qb[], float qo[])
+void multiply_quat(Quaternion *qa, Quaternion *qb, Quaternion *qo)
 {
     float q0, q1, q2, q3;
 
-    q0 = qa[0]*qb[0] - qa[1]*qb[1] - qa[2]*qb[2] - qa[3]*qb[3];
-    q1 = qa[0]*qb[1] + qa[1]*qb[0] + qa[2]*qb[3] - qa[3]*qb[2];
-    q2 = qa[0]*qb[2] - qa[1]*qb[3] + qa[2]*qb[0] + qa[3]*qb[1];
-    q3 = qa[0]*qb[3] + qa[1]*qb[2] - qa[2]*qb[1] + qa[3]*qb[0];
-    qo[0] = q0; qo[1] = q1; qo[2] = q2; qo[3] = q3;
+    q0 = qa->q0*qb->q0 - qa->q1*qb->q1 - qa->q2*qb->q2 - qa->q3*qb->q3;
+    q1 = qa->q0*qb->q1 + qa->q1*qb->q0 + qa->q2*qb->q3 - qa->q3*qb->q2;
+    q2 = qa->q0*qb->q2 - qa->q1*qb->q3 + qa->q2*qb->q0 + qa->q3*qb->q1;
+    q3 = qa->q0*qb->q3 + qa->q1*qb->q2 - qa->q2*qb->q1 + qa->q3*qb->q0;
+    qo->q0 = q0; qo->q1 = q1; qo->q2 = q2; qo->q3 = q3;
 }
 
 
 /*
  * This function calculate the vector rotaton via quatornion
  * qr - rotation quaternion
- * qv - vector to rotate (qv[0] = 0)
- * qo - output vector (qo[0] = 0)
+ * qv - vector to rotate (qv->q0 = 0)
+ * qo - output vector (qo->q0 = 0)
  * qo = qr' * qv * qr
  */
-void rotate_quat(float qr[], float qv[], float qo[])
+void rotate_quat(Quaternion *qr, Quaternion *qv, Quaternion *qo)
 {
     float q0q0, q1q1, q2q2, q3q3;
     float dq0, dq1, dq2;
     float dq1q2, dq1q3, dq0q2, dq0q3;
     float dq0q1, dq2q3;
 
-    q0q0 = qr[0]*qr[0];
-    q1q1 = qr[1]*qr[1];
-    q2q2 = qr[2]*qr[2];
-    q3q3 = qr[3]*qr[3];
-    dq0 = 2*qr[0];
-    dq1 = 2*qr[1];
-    dq2 = 2*qr[2];
-    dq1q2 = dq1 * qr[2];
-    dq1q3 = dq1 * qr[3];
-    dq0q2 = dq0 * qr[2];
-    dq0q3 = dq0 * qr[3];
-    dq0q1 = dq0 * qr[1];
-    dq2q3 = dq2 * qr[3];
+    q0q0 = qr->q0*qr->q0;
+    q1q1 = qr->q1*qr->q1;
+    q2q2 = qr->q2*qr->q2;
+    q3q3 = qr->q3*qr->q3;
+    dq0 = 2*qr->q0;
+    dq1 = 2*qr->q1;
+    dq2 = 2*qr->q2;
+    dq1q2 = dq1 * qr->q2;
+    dq1q3 = dq1 * qr->q3;
+    dq0q2 = dq0 * qr->q2;
+    dq0q3 = dq0 * qr->q3;
+    dq0q1 = dq0 * qr->q1;
+    dq2q3 = dq2 * qr->q3;
 
-    qo[0] = 0;
-    qo[1] = (q0q0+q1q1-q2q2-q3q3)*qv[1] + (dq1q2+dq0q3)*qv[2] + (dq1q3-dq0q2)*qv[3];
-    qo[2] = (dq1q2-dq0q3)*qv[1] + (q0q0+q2q2-q1q1-q3q3)*qv[2] + (dq0q1+dq2q3)*qv[3];
-    qo[3] = (dq0q2+dq1q3)*qv[1] + (dq2q3-dq0q1)*qv[2] + (q0q0+q3q3-q1q1-q2q2)*qv[3];
+    qo->q0 = 0;
+    qo->q1 = (q0q0+q1q1-q2q2-q3q3)*qv->q1 + (dq1q2+dq0q3)*qv->q2 + (dq1q3-dq0q2)*qv->q3;
+    qo->q2 = (dq1q2-dq0q3)*qv->q1 + (q0q0+q2q2-q1q1-q3q3)*qv->q2 + (dq0q1+dq2q3)*qv->q3;
+    qo->q3 = (dq0q2+dq1q3)*qv->q1 + (dq2q3-dq0q1)*qv->q2 + (q0q0+q3q3-q1q1-q2q2)*qv->q3;
 }
 
-void conjugate_quat(float qa[], float qo[])
+void conjugate_quat(Quaternion *qa, Quaternion *qo)
 {
-    qo[0] = qa[0];
-    qo[1] = -qa[1];
-    qo[2] = -qa[2];
-    qo[3] = -qa[3];
+    qo->q0 = qa->q0;
+    qo->q1 = -qa->q1;
+    qo->q2 = -qa->q2;
+    qo->q3 = -qa->q3;
 }
 
 /*
  * Convert Quaternion to Euler Angle
  */
-void quat_to_euler(float qr[], float ea[])
+void quat_to_euler(Quaternion *qr, Euler *ea)
 {
     float q0q0, q1q1, q2q2, q3q3;
     float dq0, dq1, dq2;
     float dq1q3, dq0q2/*, dq1q2*/;
     float dq0q1, dq2q3/*, dq0q3*/;
 
-    q0q0 = qr[0]*qr[0];
-    q1q1 = qr[1]*qr[1];
-    q2q2 = qr[2]*qr[2];
-    q3q3 = qr[3]*qr[3];
-    dq0 = 2*qr[0];
-    dq1 = 2*qr[1];
-    dq2 = 2*qr[2];
-    //dq1q2 = dq1 * qr[2];
-    dq1q3 = dq1 * qr[3];
-    dq0q2 = dq0 * qr[2];
-    //dq0q3 = dq0 * qr[3];
-    dq0q1 = dq0 * qr[1];
-    dq2q3 = dq2 * qr[3];
+    q0q0 = qr->q0*qr->q0;
+    q1q1 = qr->q1*qr->q1;
+    q2q2 = qr->q2*qr->q2;
+    q3q3 = qr->q3*qr->q3;
+    dq0 = 2*qr->q0;
+    dq1 = 2*qr->q1;
+    dq2 = 2*qr->q2;
+    //dq1q2 = dq1 * qr->q2;
+    dq1q3 = dq1 * qr->q3;
+    dq0q2 = dq0 * qr->q2;
+    //dq0q3 = dq0 * qr->q3;
+    dq0q1 = dq0 * qr->q1;
+    dq2q3 = dq2 * qr->q3;
 
-    ea[0] = atan2(dq0q1+dq2q3, q0q0+q3q3-q1q1-q2q2);
-    ea[1] = asin(dq0q2-dq1q3);
+    ea->thx = atan2(dq0q1+dq2q3, q0q0+q3q3-q1q1-q2q2);
+    ea->thy = asin(dq0q2-dq1q3);
 
     /* This part is removed to manage angle >90deg */
 //    if(ea->thx > MAX_RAD || ea->thx < -MAX_RAD)

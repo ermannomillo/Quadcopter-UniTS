@@ -5,13 +5,27 @@
 #include "math_extension.h"
 
 
-void normalize_quat(float q[]);
-void multiply_quat(float qa[], float qb[], float qo[]);
-void rotate_quat(float qr[], float qv[], float qo[]);
-void conjugate_quat(float qa[], float qo[]);
-void quat_to_euler(float qr[], float ea[]);
+typedef struct
+{
+    float q0, q1, q2, q3;
+} Quaternion;
+
+typedef struct
+{
+    float thx, thy, thz;
+}Euler;
+
+
+void normalize_quat(Quaternion *q);
+void multiply_quat(Quaternion *qa, Quaternion *qb, Quaternion *qo);
+void rotate_quat(Quaternion *qr, Quaternion *qv, Quaternion *qo);
+void conjugate_quat(Quaternion *qa, Quaternion *qo);
+void quat_to_euler(Quaternion *qr, Euler *ea);
+
 
 #define MAX_RAD  1.5
+
+
 
 
 #endif /* _QUATERNION_H_ */
