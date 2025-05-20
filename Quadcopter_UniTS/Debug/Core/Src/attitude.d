@@ -1,5 +1,4 @@
-Core/Src/radio.o: ../Core/Src/radio.c ../Core/Inc/radio.h \
- ../Core/Inc/quaternion.h \
+Core/Src/attitude.o: ../Core/Src/attitude.c ../Core/Inc/attitude.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
@@ -32,9 +31,10 @@ Core/Src/radio.o: ../Core/Src/radio.c ../Core/Inc/radio.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/math_extension.h ../Core/Inc/quaternion.h
-../Core/Inc/radio.h:
-../Core/Inc/quaternion.h:
+ ../Core/Inc/quaternion.h ../Core/Inc/math_extension.h \
+ ../Core/Inc/radio.h ../Core/Inc/control.h ../Core/Inc/motor.h \
+ ../Core/Inc/math_extension.h
+../Core/Inc/attitude.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h:
@@ -67,5 +67,9 @@ Core/Src/radio.o: ../Core/Src/radio.c ../Core/Inc/radio.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
-../Core/Inc/math_extension.h:
 ../Core/Inc/quaternion.h:
+../Core/Inc/math_extension.h:
+../Core/Inc/radio.h:
+../Core/Inc/control.h:
+../Core/Inc/motor.h:
+../Core/Inc/math_extension.h:

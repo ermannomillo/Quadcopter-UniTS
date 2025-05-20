@@ -3,7 +3,7 @@
 
 extern TIM_HandleTypeDef htim1;
 
-void set_motor_pwm(uint32_t motor_pwm[])
+void set_motor_pwm(uint16_t motor_pwm[])
 {
   if (motor_pwm[0] >= MOTOR_MAX_PWM)
 	  htim1.Instance->CCR1 = MOTOR_MAX_PWM;
@@ -35,7 +35,7 @@ void set_motor_pwm(uint32_t motor_pwm[])
 }
 
 
-void set_motor_pwm_zero(uint32_t motor_pwm[])
+void set_motor_pwm_zero(uint16_t motor_pwm[])
 {
   motor_pwm[0] = 0;
   motor_pwm[1] = 0;
