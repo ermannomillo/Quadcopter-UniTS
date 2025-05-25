@@ -24,6 +24,13 @@
 
 #include "motor.h"
 #include "radio.h"
+#include <stdio.h>
+#include <stdint.h>
+#include "imu.h"
+#include "filter.h"
+#include "orientation.h"
+#include <math.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,6 +81,8 @@ float rc_comm_temp[4];
 float rc_ref_euler[3];
 uint32_t motor_pwm[4];
 
+int euler_est[3];
+
 volatile uint32_t cycle_rc_0 = 0;
 volatile uint32_t cycle_rc_1 = 0;
 volatile uint32_t cycle_rc_2 = 0;
@@ -122,6 +131,8 @@ int main(void)
 	rc_comm_temp[2] = 0;
 	rc_comm_temp[3] = 0;
 
+	euler_est[3] = {0};
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -155,6 +166,11 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+
+  imu_init();
+  orientation_init();
+  HAL_Delay(1000);
+  printf("System initialized.\n\r");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -168,7 +184,16 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  	  orientation_update(euler_est);
 
+	  	// Printing for debug only
+		  static int counter = 0;
+		  if (++counter >= 100) {
+			  counter = 0;
+			  printf("ROLL: %d PITCH: %d YAW: %d\n\r", euler_est[0], euler_est[1], euler_est[2]);
+		  }
+
+		  HAL_Delay(5); // Impose frequency of update
 
 		  HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
 		  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
