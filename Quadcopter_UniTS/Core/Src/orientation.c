@@ -8,6 +8,7 @@ static int gyro_offset[3];
 static int gyro_data[3];
 static int gyro_delta[3];
 static int prev_tick_ms = 0;
+static float alpha = 0.01f;
 
 void orientation_init(void) {
     imu_calibrate(euler_offset, gyro_offset);
@@ -32,7 +33,7 @@ void orientation_update(int euler_est[3]){
     }
 
     filter_integrate_gyro(gyro_data, gyro_delta, euler_est, &prev_tick_ms);
-    filter_fuse_angles(acc_euler, euler_est, 0.05f);
+    filter_fuse_angles(acc_euler, euler_est, alpha);
 }
 
 

@@ -16,9 +16,9 @@ void filter_integrate_gyro(int gyro[3], int gyro_delta[3], int euler_est[3], int
     *prev_tick_ms = now;
 
     for (int i = 0; i < 3; i++) {
-        gyro[i] = gyro[i]*SCALING;
-        gyro_delta[i] = gyro_delta[i]*SCALING;
-        euler_est[i] += (int)((gyro[i] + gyro_delta[i]/2.0f) * dt);
+    	float gyro_scaled = gyro[i] * SCALING;
+    	float gyro_delta_scaled = gyro_delta[i] * SCALING;
+    	euler_est[i] += (int)((gyro_scaled + gyro_delta_scaled / 2.0f) * dt);
     }
 }
 

@@ -102,15 +102,12 @@ volatile float channel_mag_3 = 0;
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-int _write(int32_t file, uint8_t *ptr, int32_t len)
-  {
-      for (int i = 0; i < len; i++)
-      {
-          ITM_SendChar(*ptr++);
-      }
-      return len;
-  }
 
+int _write(int32_t file, uint8_t *ptr, int32_t len)
+{
+    HAL_UART_Transmit(&huart3, ptr, len, 1000);
+    return len;
+}
 
 /* USER CODE END 0 */
 
@@ -131,7 +128,9 @@ int main(void)
 	rc_comm_temp[2] = 0;
 	rc_comm_temp[3] = 0;
 
-	euler_est[3] = {0};
+	euler_est[0] = 0;
+	euler_est[1] = 0;
+	euler_est[2] = 0;
 
   /* USER CODE END 1 */
 
@@ -167,9 +166,11 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
-  imu_init();
-  orientation_init();
   HAL_Delay(1000);
+  printf("Starting...\n\r");
+  imu_init();
+  printf("IMU initialized.\n\r");
+  orientation_init();
   printf("System initialized.\n\r");
   /* USER CODE END 2 */
 
@@ -177,7 +178,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   set_motor_pwm_zero(motor_pwm);
-
 
   while (1)
   {
@@ -797,8 +797,8 @@ static void MX_USB_OTG_HS_USB_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
@@ -873,8 +873,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

@@ -6,12 +6,6 @@
 extern I2C_HandleTypeDef hi2c1;
 extern UART_HandleTypeDef huart3;
 
-int __io_putchar (int ch)
-{
-	  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 1000);
-	  return ch;
-}
-
 void imu_init()
 {
     unsigned char data[2];
@@ -56,7 +50,7 @@ void imu_calibrate(int euler_offset[2], int gyro_offset[3]) {
         gyro_sum[1] += data[5];
         gyro_sum[2] += data[6];
 
-        HAL_Delay(5);
+        HAL_Delay(10);
     }
 
     euler_offset[0] = euler_sum[0] / 100;
