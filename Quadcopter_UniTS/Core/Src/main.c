@@ -46,7 +46,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-I2C_HandleTypeDef hi2c4;
+I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim3;
@@ -70,7 +70,7 @@ static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM15_Init(void);
-static void MX_I2C4_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 Radio rc_comm_temp;
@@ -169,18 +169,46 @@ int main(void)
   MX_TIM4_Init();
   MX_TIM5_Init();
   MX_TIM15_Init();
-  MX_I2C4_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+
+  HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
+  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+
+  HAL_TIM_IC_Start(&htim4, TIM_CHANNEL_2);
+  HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
+
+  HAL_TIM_IC_Start(&htim5, TIM_CHANNEL_2);
+  HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_1);
+
+  HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
+  HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);  // 1ms if period is 2000 ticks
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 100);
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 100);
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 100);
+
+     HAL_Delay(3000);  // Wait for ESC to initialize
+
+     // Optional: set mid-throttle (1.5 ms pulse width)
+     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 150);  // 1.5ms
+     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 150);
+     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 150);
+     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 150);
+
+
   set_motor_pwm_zero(motor_pwm);
+  set_motor_pwm(motor_pwm);
   PID_init(&pid);
 
 
@@ -326,50 +354,50 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief I2C4 Initialization Function
+  * @brief I2C1 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_I2C4_Init(void)
+static void MX_I2C1_Init(void)
 {
 
-  /* USER CODE BEGIN I2C4_Init 0 */
+  /* USER CODE BEGIN I2C1_Init 0 */
 
-  /* USER CODE END I2C4_Init 0 */
+  /* USER CODE END I2C1_Init 0 */
 
-  /* USER CODE BEGIN I2C4_Init 1 */
+  /* USER CODE BEGIN I2C1_Init 1 */
 
-  /* USER CODE END I2C4_Init 1 */
-  hi2c4.Instance = I2C4;
-  hi2c4.Init.Timing = 0x00702787;
-  hi2c4.Init.OwnAddress1 = 0;
-  hi2c4.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c4.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c4.Init.OwnAddress2 = 0;
-  hi2c4.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
-  hi2c4.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c4.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c4) != HAL_OK)
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x00702787;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
   {
     Error_Handler();
   }
 
   /** Configure Analogue filter
   */
-  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c4, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
   {
     Error_Handler();
   }
 
   /** Configure Digital filter
   */
-  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c4, 0) != HAL_OK)
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN I2C4_Init 2 */
+  /* USER CODE BEGIN I2C1_Init 2 */
 
-  /* USER CODE END I2C4_Init 2 */
+  /* USER CODE END I2C1_Init 2 */
 
 }
 
@@ -394,7 +422,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 639;
+  htim1.Init.Prescaler = 1499;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 1999;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -927,8 +955,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
         cycle_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
         period_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-    	if (cycle_rc_0 > 1990 && cycle_rc_0 < 2010 && period_rc_0 > 0 && cycle_rc_0 > period_rc_0 ) {
-    		channel_mag_0 = (float) period_rc_0 / (float) cycle_rc_0;
+    	if (cycle_rc_0 > 4300 && cycle_rc_0 < 4380 && period_rc_0 > 0 && cycle_rc_0 > period_rc_0 ) {
+    		channel_mag_0 = ((float) period_rc_0 / (float) cycle_rc_0 - MIN_DUTY) / (MAX_DUTY - MIN_DUTY);
     		rc_comm_temp.AIL = (channel_mag_0 - 0.5) * 2 * RC_FULLSCALE;
     		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
     		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
@@ -941,8 +969,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
             cycle_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
             period_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-        	if (cycle_rc_1 > 1990 && cycle_rc_1 < 2010 && period_rc_1 > 0 && cycle_rc_1 > period_rc_1) {
-        		channel_mag_1 = (float) period_rc_1 / (float) cycle_rc_1;
+        	if (cycle_rc_1 > 4300 && cycle_rc_1 < 4380 && period_rc_1 > 0 && cycle_rc_1 > period_rc_1) {
+        		channel_mag_1 = ((float) period_rc_1 / (float) cycle_rc_1  - MIN_DUTY) / (MAX_DUTY - MIN_DUTY);
         		rc_comm_temp.ELE = (channel_mag_1 - 0.5) * 2 * RC_FULLSCALE;
         		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
         		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
@@ -955,8 +983,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
                 cycle_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
                 period_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-            	if (cycle_rc_2 > 1990 && cycle_rc_2 < 2010 && period_rc_2 > 0 && cycle_rc_2 > period_rc_2) {
-            		channel_mag_2 = (float) period_rc_2 / (float) cycle_rc_2;
+            	if (cycle_rc_2 > 4300 && cycle_rc_2 < 4380 && period_rc_2 > 0 && cycle_rc_2 > period_rc_2) {
+            		channel_mag_2 = ((float) period_rc_2 / (float) cycle_rc_2  - MIN_DUTY) / (MAX_DUTY - MIN_DUTY);
             		rc_comm_temp.RUD = (channel_mag_2 - 0.5) * 2 * RC_FULLSCALE;
             		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
             		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
@@ -968,8 +996,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
                 cycle_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
                 period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-            	if (cycle_rc_3 > 1990 && cycle_rc_3 < 2010 && period_rc_3 > 0 && cycle_rc_3 > period_rc_3) {
-            		channel_mag_3 = (float) period_rc_3 / (float) cycle_rc_3;
+            	if (cycle_rc_3 > 4300 && cycle_rc_3 < 4380 && period_rc_3 > 0 && cycle_rc_3 > period_rc_3) {
+            		channel_mag_3 = ((float) period_rc_3 / (float) cycle_rc_3  - MIN_DUTY) / (MAX_DUTY - MIN_DUTY);
             		rc_comm_temp.THR =  channel_mag_3 * RC_FULLSCALE;
             		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
             		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
