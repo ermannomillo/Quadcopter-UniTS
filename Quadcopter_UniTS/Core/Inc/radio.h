@@ -11,6 +11,9 @@
 #define ROLL_MAX_DEG    30
 #define RADIO_SAMPLING_TIME    0.02 // 50 Hz RC frequency
 
+#define MAX_DUTY 0.96
+#define MIN_DUTY 0.54
+
 #define YAW_MAX_DEG     (60.0f * RADIO_SAMPLING_TIME)
 #define YAW_MIN_RAD     0.0872
 
