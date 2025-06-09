@@ -12,7 +12,7 @@ typedef struct
 
 typedef struct
 {
-    float thx, thy, thz;
+    float pitch, roll, yaw;
 }Euler;
 
 

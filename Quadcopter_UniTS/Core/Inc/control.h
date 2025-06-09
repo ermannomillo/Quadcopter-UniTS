@@ -85,6 +85,25 @@ typedef struct
 }Dual_PID_Control;
 
 
+typedef struct
+{
+    float p_error[3];
+    float i_error[3];
+    float d_error[3];
+
+}PID_Error;
+
+typedef struct
+{
+    float pitch;
+    float roll;
+    float yaw;
+
+}PID_Out;
+
+
+
+
 void PID_init(Dual_PID_Control *pid);
 void PID_outer(Euler *euler_rc, Euler *euler_ahrs, Attitude *ahrs, Dual_PID_Control *pid, Radio *rc_comm);
 void PID_inner(Euler *euler_rc, Gyro *gyro_rad, Attitude *ahrs, Dual_PID_Control *pid, uint16_t motor_pwm[], Radio *rc_comm);
