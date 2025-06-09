@@ -18,7 +18,7 @@
 
 // Sampling time of sensors
 #define SENSOR_SAMPLING_TIME    0.00625f
-#define alpha        1.0f
+#define alpha_att        1.0f
 #define BETA_NORM    0.8f            //0.15
 #define BETA_ZERO    0
 #define zeta         0.006f             //0.003

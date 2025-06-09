@@ -1,0 +1,3 @@
+../Core/Src/filter.c:7:6:filter_compute_gravity_angles	1
+../Core/Src/filter.c:15:6:filter_integrate_gyro	2
+../Core/Src/filter.c:27:6:filter_fuse_angles	2

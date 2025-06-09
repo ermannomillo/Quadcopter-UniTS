@@ -64,7 +64,7 @@ void PID_outer(Euler *euler_rc, Euler *euler_ahrs, Attitude *ahrs, Dual_PID_Cont
   }
 
   // x-axis PID
-  error = euler_rc->thx - euler_ahrs->thx;
+  error = euler_rc->pitch - euler_ahrs->pitch;
   pid_x_integ1 += error*pid->ts;
   if(pid_x_integ1 > pid->x_i1_limit)
     pid_x_integ1 = pid->x_i1_limit;
@@ -73,7 +73,7 @@ void PID_outer(Euler *euler_rc, Euler *euler_ahrs, Attitude *ahrs, Dual_PID_Cont
   pid->x_s1 =  pid->x_kp1*error + pid->x_ki1*pid_x_integ1;
 
   // y-axis PID
-  error = euler_rc->thy - euler_ahrs->thy;
+  error = euler_rc->roll - euler_ahrs->roll;
   pid_y_integ1 += error*pid->ts;
   if(pid_y_integ1 > pid->y_i1_limit)
     pid_y_integ1 = pid->y_i1_limit;
@@ -82,7 +82,7 @@ void PID_outer(Euler *euler_rc, Euler *euler_ahrs, Attitude *ahrs, Dual_PID_Cont
   pid->y_s1 =  pid->y_kp1*error + pid->y_ki1*pid_y_integ1;
 
   // z-axis PID
-  error = euler_rc->thz - euler_ahrs->thz;
+  error = euler_rc->yaw - euler_ahrs->yaw;
   pid_z_integ1 += error*pid->ts;
   if(pid_z_integ1 > pid->z_i1_limit)
     pid_z_integ1 = pid->z_i1_limit;

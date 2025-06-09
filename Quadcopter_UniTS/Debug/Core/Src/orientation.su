@@ -1,0 +1,2 @@
+../Core/Src/orientation.c:13:6:orientation_init	8	static
+../Core/Src/orientation.c:18:6:orientation_update	48	static

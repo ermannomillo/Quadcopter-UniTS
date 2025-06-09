@@ -27,6 +27,9 @@
 #include "quaternion.h"
 #include "attitude.h"
 #include "control.h"
+#include "orientation.h"
+#include "filter.h"
+#include "imu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,13 +77,22 @@ static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 Radio rc_comm_temp;
-Euler rc_ref_euler, attitude_euler;
+Euler rc_ref_euler, imu_est_euler;
 uint16_t motor_pwm[4];
-Attitude attitude;
-Dual_PID_Control pid;
-Axes_float acc_attitude;
-Axes_float gyro_attitude;
-Gyro gyro_rad;
+
+PID_Error control_error;
+PID_Error former_error;
+PID_Out out_pid;
+
+
+int euler_est[3];
+int16_t motor_throttle;
+float dt;
+
+
+float Kp[3] = {1,1,1};
+float Ki[3] = {1,1,1};
+float Kd[3] = {1,1,1};
 
 
 volatile uint32_t cycle_rc_0 = 0;
@@ -122,23 +134,31 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	rc_ref_euler.thx =  0;
-	rc_ref_euler.thy =  0;
-	rc_ref_euler.thz =  0;
+	rc_ref_euler.pitch =  0;
+	rc_ref_euler.roll =  0;
+	rc_ref_euler.yaw =  0;
+
+	imu_est_euler.pitch =  0;
+	imu_est_euler.roll =  0;
+	imu_est_euler.yaw =  0;
 
 	rc_comm_temp.AIL = 0;
 	rc_comm_temp.ELE = 0;
 	rc_comm_temp.RUD = 0;
 	rc_comm_temp.THR = 0;
 
-	rc_ref_euler.thz = attitude_euler.thz;
+	for (int i = 0; i < 3; i++) {
+		euler_est[i] = 0;
+		control_error.p_error[i] = 0;
+		control_error.i_error[i] = 0;
+		control_error.d_error[i] = 0;
+		former_error.p_error[i] = 0;
+		former_error.i_error[i] = 0;
+		former_error.d_error[i] = 0;
+	}
 
-	acc_attitude.AXIS_X = 0;
-	acc_attitude.AXIS_Y = 0;
-	acc_attitude.AXIS_Z = 0;
-	gyro_attitude.AXIS_X = 0;
-	gyro_attitude.AXIS_Y = 0;
-	gyro_attitude.AXIS_Z = 0;
+	motor_throttle = 0;
+	dt = 1;
 
 
 
@@ -209,7 +229,12 @@ int main(void)
 
   set_motor_pwm_zero(motor_pwm);
   set_motor_pwm(motor_pwm);
-  PID_init(&pid);
+
+
+  imu_init();
+  orientation_init();
+
+
 
 
   while (1)
@@ -234,58 +259,50 @@ int main(void)
 
 		  // Target euler angles: PID reference
 		  get_target_euler(&rc_ref_euler, &rc_comm_temp);
+		  orientation_update(euler_est);
 
-		  /*
-		   * Placeholder for Acc + Gyro :
-		   */
+		  imu_est_euler.pitch = euler_est[0];
+		  imu_est_euler.roll  =  euler_est[1];
+		  imu_est_euler.yaw   =  euler_est[2];
 
-		  acc_attitude.AXIS_X = 0;
-		  acc_attitude.AXIS_Y = 0;
-		  acc_attitude.AXIS_Z = 0;
-		  gyro_attitude.AXIS_X = 0;
-		  gyro_attitude.AXIS_Y = 0;
-		  gyro_attitude.AXIS_Z = 0;
+		  control_error.p_error[0] = rc_ref_euler.pitch - imu_est_euler.pitch;
+		  control_error.p_error[1] = rc_ref_euler.roll - imu_est_euler.roll;
+		  control_error.p_error[2] = rc_ref_euler.yaw - imu_est_euler.yaw;
 
-		  /*
-		   * MOVING AVERAGE + FILTER
-		   */
+		  for (int i = 0; i < 3; i++) {
+			  control_error.d_error[i] = control_error.p_error[i] - former_error.p_error[i];
+			  control_error.i_error[i] += control_error.p_error[i] * dt;
+		  }
 
-
-		  // Update attitude
-		  attitude_fusion(&acc_attitude, &gyro_attitude, &attitude, &rc_comm_temp);
-		  quat_to_euler(&attitude.q, &attitude_euler);
-
-		  if(rc_comm_temp.THR < MIN_THR)
-		  {
-			rc_ref_euler.thz = 0;
-			attitude_euler.thz = 0;
+		  // Update former errors
+		  for (int i = 0; i < 3; i++) {
+			  former_error.p_error[i] = control_error.p_error[i];
+		      former_error.i_error[i] = control_error.i_error[i];
 		  }
 
 
-		  PID_outer(&rc_ref_euler, &attitude_euler, &attitude, &pid, &rc_comm_temp);
+		  // PID control output
+		  out_pid.pitch = Kp[0] * control_error.p_error[0] +
+		                  Ki[0] * control_error.i_error[0] +
+		                  Kd[0] * control_error.d_error[0];
 
-		  gyro_rad.gx = ((float)gyro_attitude.AXIS_X)*((float)COE_MDPS_TO_RADPS);
-		  gyro_rad.gy = ((float)gyro_attitude.AXIS_Y)*((float)COE_MDPS_TO_RADPS);
-		  gyro_rad.gz = ((float)gyro_attitude.AXIS_Z)*((float)COE_MDPS_TO_RADPS);
+		  out_pid.roll = Kp[1] * control_error.p_error[1] +
+		                 Ki[1] * control_error.i_error[1] +
+		                 Kd[1] * control_error.d_error[1];
 
-		  attitude_euler.thz += gyro_rad.gz*PID_SAMPLING_TIME;
-		  /**
-		   * !! PID_SAMPLING_TIME -> Precise PID sampling time: computed or defined by interrupt
-		   */
+		  out_pid.yaw = Kp[2] * control_error.p_error[2] +
+		                Ki[2] * control_error.i_error[2] +
+		                Kd[2] * control_error.d_error[2];
 
-		  if(rc_comm_temp.THR < MIN_THR)
-		  {
-			  attitude_euler.thz = 0;
-		  }
 
-		  PID_inner(&rc_ref_euler, &gyro_rad, &attitude, &pid, motor_pwm, &rc_comm_temp);
+		  motor_throttle = 0.28f *rc_comm_temp.THR + MOTOR_MIN_PWM;  // Scaled throttle
 
-		  if(rc_comm_temp.THR < MIN_THR)
-		  {
-			  set_motor_pwm_zero(motor_pwm);
-		  }
+		  // Mixing formula
+		  motor_pwm[0] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw;
+		  motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw;
+		  motor_pwm[2] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw;
+		  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw;
 
-		  set_motor_pwm(motor_pwm);
 
   }
   /* USER CODE END 3 */

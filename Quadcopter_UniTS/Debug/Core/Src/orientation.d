@@ -1,4 +1,5 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+Core/Src/orientation.o: ../Core/Src/orientation.c ../Core/Inc/imu.h \
+ ../Core/Inc/filter.h ../Core/Inc/orientation.h ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
@@ -30,12 +31,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/motor.h ../Core/Inc/radio.h ../Core/Inc/quaternion.h \
- ../Core/Inc/math_extension.h ../Core/Inc/quaternion.h \
- ../Core/Inc/attitude.h ../Core/Inc/radio.h ../Core/Inc/control.h \
- ../Core/Inc/motor.h ../Core/Inc/orientation.h ../Core/Inc/filter.h \
- ../Core/Inc/imu.h
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
+../Core/Inc/imu.h:
+../Core/Inc/filter.h:
+../Core/Inc/orientation.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -69,15 +68,3 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
-../Core/Inc/motor.h:
-../Core/Inc/radio.h:
-../Core/Inc/quaternion.h:
-../Core/Inc/math_extension.h:
-../Core/Inc/quaternion.h:
-../Core/Inc/attitude.h:
-../Core/Inc/radio.h:
-../Core/Inc/control.h:
-../Core/Inc/motor.h:
-../Core/Inc/orientation.h:
-../Core/Inc/filter.h:
-../Core/Inc/imu.h:

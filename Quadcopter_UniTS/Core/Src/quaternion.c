@@ -94,8 +94,8 @@ void quat_to_euler(Quaternion *qr, Euler *ea)
     dq0q1 = dq0 * qr->q1;
     dq2q3 = dq2 * qr->q3;
 
-    ea->thx = atan2(dq0q1+dq2q3, q0q0+q3q3-q1q1-q2q2);
-    ea->thy = asin(dq0q2-dq1q3);
+    ea->pitch = atan2(dq0q1+dq2q3, q0q0+q3q3-q1q1-q2q2);
+    ea->yaw = asin(dq0q2-dq1q3);
 
     /* This part is removed to manage angle >90deg */
 //    if(ea->thx > MAX_RAD || ea->thx < -MAX_RAD)
