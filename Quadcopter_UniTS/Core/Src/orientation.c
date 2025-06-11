@@ -8,7 +8,7 @@ static int gyro_offset[3];
 static int gyro_data[3];
 static int gyro_delta[3];
 static int prev_tick_ms = 0;
-static float alpha = 0.01f;
+static float alpha = 1.0;
 
 void orientation_init(void) {
     imu_calibrate(euler_offset, gyro_offset);

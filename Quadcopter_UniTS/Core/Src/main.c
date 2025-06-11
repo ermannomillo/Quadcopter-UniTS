@@ -25,11 +25,12 @@
 #include "motor.h"
 #include "radio.h"
 #include "quaternion.h"
-#include "attitude.h"
 #include "control.h"
 #include "orientation.h"
 #include "filter.h"
 #include "imu.h"
+#include <stdint.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -261,24 +262,40 @@ int main(void)
 		  get_target_euler(&rc_ref_euler, &rc_comm_temp);
 		  orientation_update(euler_est);
 
-		  imu_est_euler.pitch = euler_est[0];
-		  imu_est_euler.roll  =  euler_est[1];
-		  imu_est_euler.yaw   =  euler_est[2];
+		  imu_est_euler.roll  = euler_est[0];
+		  imu_est_euler.pitch = euler_est[1];
+		  imu_est_euler.yaw   = euler_est[2];
 
-		  control_error.p_error[0] = rc_ref_euler.pitch - imu_est_euler.pitch;
-		  control_error.p_error[1] = rc_ref_euler.roll - imu_est_euler.roll;
+		  control_error.p_error[0] = rc_ref_euler.roll - imu_est_euler.roll;
+		  control_error.p_error[1] = rc_ref_euler.pitch - imu_est_euler.pitch;
 		  control_error.p_error[2] = rc_ref_euler.yaw - imu_est_euler.yaw;
 
 		  for (int i = 0; i < 3; i++) {
-			  control_error.d_error[i] = control_error.p_error[i] - former_error.p_error[i];
-			  control_error.i_error[i] += control_error.p_error[i] * dt;
+		  			  control_error.d_error[i] = control_error.p_error[i] - former_error.p_error[i];
+		  			  control_error.i_error[i] += control_error.p_error[i] * dt;
+		  		  }
+		  // Update former errors
+		  		  for (int i = 0; i < 3; i++) {
+		  			  former_error.p_error[i] = control_error.p_error[i];
+		  		      former_error.i_error[i] = control_error.i_error[i];
+		  		  }
+
+		  motor_throttle = 0.80f *rc_comm_temp.THR + MOTOR_MIN_PWM;  // Scaled throttle
+
+
+		  HAL_Delay(100);
+		  /*
+
+
+		  // Anti-windup
+		  for (int i = 0; i < 3; i++) {
+		      if (control_error.i_error[i] > I_TERM_LIMIT)
+		          control_error.i_error[i] = I_TERM_LIMIT;
+		      else if (control_error.i_error[i] < -I_TERM_LIMIT)
+		          control_error.i_error[i] = -I_TERM_LIMIT;
 		  }
 
-		  // Update former errors
-		  for (int i = 0; i < 3; i++) {
-			  former_error.p_error[i] = control_error.p_error[i];
-		      former_error.i_error[i] = control_error.i_error[i];
-		  }
+
 
 
 		  // PID control output
@@ -295,7 +312,6 @@ int main(void)
 		                Kd[2] * control_error.d_error[2];
 
 
-		  motor_throttle = 0.28f *rc_comm_temp.THR + MOTOR_MIN_PWM;  // Scaled throttle
 
 		  // Mixing formula
 		  motor_pwm[0] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw;
@@ -303,6 +319,7 @@ int main(void)
 		  motor_pwm[2] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw;
 		  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw;
 
+		  */
 
   }
   /* USER CODE END 3 */
@@ -1014,7 +1031,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
                 cycle_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
                 period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
             	if (cycle_rc_3 > 4300 && cycle_rc_3 < 4380 && period_rc_3 > 0 && cycle_rc_3 > period_rc_3) {
-            		channel_mag_3 = ((float) period_rc_3 / (float) cycle_rc_3  - MIN_DUTY) / (MAX_DUTY - MIN_DUTY);
+            		channel_mag_3 = ((float) period_rc_3 / (float) cycle_rc_3  - MIN_DUTY) / (MAX_DUTY - MIN_DUTY) - 0.125;
             		rc_comm_temp.THR =  channel_mag_3 * RC_FULLSCALE;
             		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
             		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);

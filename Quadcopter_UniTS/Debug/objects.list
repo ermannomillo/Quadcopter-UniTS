@@ -1,4 +1,3 @@
-"./Core/Src/attitude.o"
 "./Core/Src/control.o"
 "./Core/Src/filter.o"
 "./Core/Src/imu.o"

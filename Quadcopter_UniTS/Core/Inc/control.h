@@ -1,11 +1,12 @@
 #ifndef _FLIGHT_CONTROL_H_
 #define _FLIGHT_CONTROL_H_
 
-#include <attitude.h>
 #include "stm32h7xx_hal.h"
 #include "quaternion.h"
 #include "motor.h"
 
+
+#define I_TERM_LIMIT 50000
 
 #define MIN_THR              20                /* External ESC configuration */
 
@@ -100,13 +101,6 @@ typedef struct
     float yaw;
 
 }PID_Out;
-
-
-
-
-void PID_init(Dual_PID_Control *pid);
-void PID_outer(Euler *euler_rc, Euler *euler_ahrs, Attitude *ahrs, Dual_PID_Control *pid, Radio *rc_comm);
-void PID_inner(Euler *euler_rc, Gyro *gyro_rad, Attitude *ahrs, Dual_PID_Control *pid, uint16_t motor_pwm[], Radio *rc_comm);
 
 
 #endif

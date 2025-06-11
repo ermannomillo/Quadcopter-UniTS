@@ -32,7 +32,8 @@ Core/Src/radio.o: ../Core/Src/radio.c ../Core/Inc/radio.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/math_extension.h ../Core/Inc/quaternion.h
+ ../Core/Inc/math_extension.h ../Core/Inc/quaternion.h \
+ ../Core/Inc/filter.h
 ../Core/Inc/radio.h:
 ../Core/Inc/quaternion.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -69,3 +70,4 @@ Core/Src/radio.o: ../Core/Src/radio.c ../Core/Inc/radio.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
 ../Core/Inc/math_extension.h:
 ../Core/Inc/quaternion.h:
+../Core/Inc/filter.h:
