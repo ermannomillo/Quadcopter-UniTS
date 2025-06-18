@@ -314,10 +314,10 @@ int main(void)
 
 
 		  // Mixing formula
-		  motor_pwm[0] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw;
-		  motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw;
-		  motor_pwm[2] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw;
-		  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw;
+		  motor_pwm[0] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
+		  motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw;//should be the front left motor 
+		  motor_pwm[2] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw;// should be the front right motor
+		  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw;//should be the back right motor
 
 		  */
 
