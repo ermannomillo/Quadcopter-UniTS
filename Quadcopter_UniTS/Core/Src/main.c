@@ -91,9 +91,9 @@ int16_t motor_throttle;
 float dt;
 
 
-float Kp[3] = {1,1,1};
-float Ki[3] = {1,1,1};
-float Kd[3] = {1,1,1};
+float Kp[3] = {0.5,0, 0};
+float Ki[3] = {0,0,0};
+float Kd[3] = {0,0,0};
 
 
 volatile uint32_t cycle_rc_0 = 0;
@@ -110,6 +110,19 @@ volatile float channel_mag_0 = 0;
 volatile float channel_mag_1 = 0;
 volatile float channel_mag_2 = 0;
 volatile float channel_mag_3 = 0;
+
+#define NUM_ITERATIONS 10
+
+uint16_t rc_0_calibration;
+uint16_t rc_1_calibration;
+uint16_t rc_2_calibration;
+uint16_t rc_3_calibration;
+
+uint16_t offset_rc0;
+uint16_t offset_rc1;
+uint16_t offset_rc2;
+uint16_t offset_rc3;
+
 
 /* USER CODE END PFP */
 
@@ -197,6 +210,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
+
   HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
   HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
@@ -208,6 +222,7 @@ int main(void)
 
   HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
   HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
+
 
   /* USER CODE END 2 */
 
@@ -236,6 +251,61 @@ int main(void)
   orientation_init();
 
 
+  int i = 0;
+  while ( i < NUM_ITERATIONS) {
+
+      HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
+      HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+
+      if (period_rc_0 > 3000 ) {
+    	  rc_0_calibration += period_rc_0;
+      	  i++;
+  	  }
+  }
+  offset_rc0 = (int) rc_0_calibration / NUM_ITERATIONS;
+
+  i = 0;
+    while ( i < NUM_ITERATIONS) {
+
+        HAL_TIM_IC_Start(&htim4, TIM_CHANNEL_2);
+        HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
+
+        if (period_rc_1 > 3000 ) {
+      	  rc_1_calibration += period_rc_1;
+        	  i++;
+    	  }
+    }
+    offset_rc1 = (int) rc_1_calibration / NUM_ITERATIONS;
+
+
+     i = 0;
+      while ( i < NUM_ITERATIONS) {
+
+          HAL_TIM_IC_Start(&htim5, TIM_CHANNEL_2);
+          HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_1);
+
+          if (period_rc_2 > 3000 ) {
+        	  rc_2_calibration += period_rc_2;
+          	  i++;
+      	  }
+      }
+      offset_rc2 = (int) rc_2_calibration / NUM_ITERATIONS;
+
+
+      i = 0;
+        while ( i < NUM_ITERATIONS) {
+
+            HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
+            HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
+
+            if (period_rc_3 > 2000 ) {
+          	  rc_3_calibration += period_rc_3;
+          	  i++;
+        	}
+        }
+
+        offset_rc3 = (int) rc_3_calibration / NUM_ITERATIONS;
+
 
 
   while (1)
@@ -243,7 +313,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
 
 	  	  // Reactivate Radio interrupts
 		  HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
@@ -280,11 +349,7 @@ int main(void)
 		  		      former_error.i_error[i] = control_error.i_error[i];
 		  		  }
 
-		  motor_throttle = 0.80f *rc_comm_temp.THR + MOTOR_MIN_PWM;  // Scaled throttle
-
-
-		  HAL_Delay(100);
-		  /*
+		  motor_throttle = 0.80f * (float)rc_comm_temp.THR / RC_FULLSCALE * MOTOR_MAX_PWM + MOTOR_MIN_PWM * (1-  (float)rc_comm_temp.THR / RC_FULLSCALE);  // Scaled throttle
 
 
 		  // Anti-windup
@@ -296,30 +361,28 @@ int main(void)
 		  }
 
 
-
-
 		  // PID control output
-		  out_pid.pitch = Kp[0] * control_error.p_error[0] +
-		                  Ki[0] * control_error.i_error[0] +
-		                  Kd[0] * control_error.d_error[0];
+		  out_pid.roll = Kp[0] * control_error.p_error[0] +
+		                 Ki[0] * control_error.i_error[0] +
+		                 Kd[0] * control_error.d_error[0];
 
-		  out_pid.roll = Kp[1] * control_error.p_error[1] +
-		                 Ki[1] * control_error.i_error[1] +
-		                 Kd[1] * control_error.d_error[1];
+		  out_pid.pitch = Kp[1] * control_error.p_error[1] +
+		                  Ki[1] * control_error.i_error[1] +
+		                  Kd[1] * control_error.d_error[1];
 
 		  out_pid.yaw = Kp[2] * control_error.p_error[2] +
 		                Ki[2] * control_error.i_error[2] +
 		                Kd[2] * control_error.d_error[2];
 
 
-
 		  // Mixing formula
-		  motor_pwm[0] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
-		  motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw;//should be the front left motor 
-		  motor_pwm[2] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw;// should be the front right motor
-		  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw;//should be the back right motor
+		  motor_pwm[0] = - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
+		  motor_pwm[1] = + out_pid.pitch - out_pid.roll - out_pid.yaw;//should be the front left motor
+		  motor_pwm[2] = + out_pid.pitch + out_pid.roll + out_pid.yaw;// should be the front right motor
+		  motor_pwm[3] = - out_pid.pitch + out_pid.roll - out_pid.yaw;//should be the back right motor motor_throttle ;
 
-		  */
+		  set_motor_pwm(motor_pwm);
+
 
   }
   /* USER CODE END 3 */
@@ -989,11 +1052,11 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
         cycle_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
         period_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-    	if (cycle_rc_0 > 4300 && cycle_rc_0 < 4380 && period_rc_0 > 0 && cycle_rc_0 > period_rc_0 ) {
-    		channel_mag_0 = ((float) period_rc_0 / (float) cycle_rc_0 - MIN_DUTY) / (MAX_DUTY - MIN_DUTY);
-    		rc_comm_temp.AIL = (channel_mag_0 - 0.5) * 2 * RC_FULLSCALE;
-    		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
-    		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
+    	if (cycle_rc_0 > 4350 && cycle_rc_0 < 4370 && period_rc_0 > 0 && cycle_rc_0 > period_rc_0 ) {
+    		float duty_actual = (float)period_rc_0 / (float)cycle_rc_0;
+    		float duty_center = (float)offset_rc0 / (float)cycle_rc_0;
+    		channel_mag_0 = (duty_actual - duty_center) / (1.0f - duty_center);
+    		rc_comm_temp.AIL = channel_mag_0 * RC_FULLSCALE;
 
     	}
     }
@@ -1003,11 +1066,12 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
             cycle_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
             period_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-        	if (cycle_rc_1 > 4300 && cycle_rc_1 < 4380 && period_rc_1 > 0 && cycle_rc_1 > period_rc_1) {
-        		channel_mag_1 = ((float) period_rc_1 / (float) cycle_rc_1  - MIN_DUTY) / (MAX_DUTY - MIN_DUTY);
-        		rc_comm_temp.ELE = (channel_mag_1 - 0.5) * 2 * RC_FULLSCALE;
-        		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
-        		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
+        	if (cycle_rc_1 > 4350 && cycle_rc_1 < 4370 && period_rc_1 > 0 && cycle_rc_1 > period_rc_1) {
+        		float duty_actual = (float)period_rc_1 / (float)cycle_rc_1;
+        		float duty_center = (float)offset_rc1 / (float)cycle_rc_1;
+        		channel_mag_1 = (duty_actual - duty_center) / (1.0f - duty_center);
+
+        		rc_comm_temp.ELE = channel_mag_1 * RC_FULLSCALE;
 
         	}
     }
@@ -1017,11 +1081,12 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
                 cycle_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
                 period_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-            	if (cycle_rc_2 > 4300 && cycle_rc_2 < 4380 && period_rc_2 > 0 && cycle_rc_2 > period_rc_2) {
-            		channel_mag_2 = ((float) period_rc_2 / (float) cycle_rc_2  - MIN_DUTY) / (MAX_DUTY - MIN_DUTY);
-            		rc_comm_temp.RUD = (channel_mag_2 - 0.5) * 2 * RC_FULLSCALE;
-            		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
-            		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
+            	if (cycle_rc_2 > 4350 && cycle_rc_2 < 4370 && period_rc_2 > 0 && cycle_rc_2 > period_rc_2) {
+            		float duty_actual = (float)period_rc_2 / (float)cycle_rc_2;
+                    float duty_center = (float)offset_rc2 / (float)cycle_rc_2;
+                    channel_mag_2 = (duty_actual - duty_center) / (1.0f - duty_center);
+
+            		rc_comm_temp.RUD = channel_mag_2 * RC_FULLSCALE;
 
             	}
             }
@@ -1030,11 +1095,10 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
                 cycle_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
                 period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-            	if (cycle_rc_3 > 4300 && cycle_rc_3 < 4380 && period_rc_3 > 0 && cycle_rc_3 > period_rc_3) {
-            		channel_mag_3 = ((float) period_rc_3 / (float) cycle_rc_3  - MIN_DUTY) / (MAX_DUTY - MIN_DUTY) - 0.125;
+            	if (cycle_rc_3 > 4350 && cycle_rc_3 < 4370 && period_rc_3 > 0 && cycle_rc_3 > period_rc_3) {
+            		float min_rc3 = (float) offset_rc3 / (float) cycle_rc_3;
+            		channel_mag_3 = ((float) period_rc_3 / (float) cycle_rc_3  - min_rc3) / (1 - min_rc3);
             		rc_comm_temp.THR =  channel_mag_3 * RC_FULLSCALE;
-            		HAL_TIM_IC_Stop_IT(htim, TIM_CHANNEL_1);
-            		HAL_TIM_IC_Stop(htim, TIM_CHANNEL_2);
 
             	}
             }

@@ -3,15 +3,15 @@
 #include "orientation.h"
 #include "main.h"  // for HAL_GetTick()
 
-static int euler_offset[2];
-static int gyro_offset[3];
+static int euler_offset[2] = {-179180, -637};
+static int gyro_offset[3] = {-80, 25, 206};
 static int gyro_data[3];
 static int gyro_delta[3];
 static int prev_tick_ms = 0;
-static float alpha = 1.0;
+static float alpha = 0.01;
 
 void orientation_init(void) {
-    imu_calibrate(euler_offset, gyro_offset);
+    //imu_calibrate(euler_offset, gyro_offset);
     prev_tick_ms = HAL_GetTick();
 }
 
