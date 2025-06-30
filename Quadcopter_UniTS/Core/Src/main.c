@@ -91,9 +91,9 @@ int16_t motor_throttle;
 float dt;
 
 
-float Kp[3] = {0.5,0, 0};
-float Ki[3] = {0,0,0};
-float Kd[3] = {0,0,0};
+float Kp[3] = {0.00037*0.6*0.8, 0.00024*0.6, 0}; // 0.00037*0.6*0.8,
+float Ki[3] = {0, 0, 0};
+float Kd[3] = {0.00037*0.8*1/8, 0.00024*0.8*1/8, 0}; //0.00037*0.8*1/8
 
 
 volatile uint32_t cycle_rc_0 = 0;
@@ -148,7 +148,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	rc_ref_euler.pitch =  0;
+    rc_ref_euler.pitch =  0;
 	rc_ref_euler.roll =  0;
 	rc_ref_euler.yaw =  0;
 
@@ -172,7 +172,7 @@ int main(void)
 	}
 
 	motor_throttle = 0;
-	dt = 1;
+	dt = 0.001;
 
 
 
@@ -254,9 +254,6 @@ int main(void)
   int i = 0;
   while ( i < NUM_ITERATIONS) {
 
-      HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
-      HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
-
       if (period_rc_0 > 3000 ) {
     	  rc_0_calibration += period_rc_0;
       	  i++;
@@ -266,9 +263,6 @@ int main(void)
 
   i = 0;
     while ( i < NUM_ITERATIONS) {
-
-        HAL_TIM_IC_Start(&htim4, TIM_CHANNEL_2);
-        HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
 
         if (period_rc_1 > 3000 ) {
       	  rc_1_calibration += period_rc_1;
@@ -281,9 +275,6 @@ int main(void)
      i = 0;
       while ( i < NUM_ITERATIONS) {
 
-          HAL_TIM_IC_Start(&htim5, TIM_CHANNEL_2);
-          HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_1);
-
           if (period_rc_2 > 3000 ) {
         	  rc_2_calibration += period_rc_2;
           	  i++;
@@ -295,8 +286,6 @@ int main(void)
       i = 0;
         while ( i < NUM_ITERATIONS) {
 
-            HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
-            HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
 
             if (period_rc_3 > 2000 ) {
           	  rc_3_calibration += period_rc_3;
@@ -307,6 +296,10 @@ int main(void)
         offset_rc3 = (int) rc_3_calibration / NUM_ITERATIONS;
 
 
+  set_motor_pwm_zero(motor_pwm);
+  set_motor_pwm(motor_pwm);
+
+  int counter = 0;
 
   while (1)
   {
@@ -314,7 +307,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  	  // Reactivate Radio interrupts
+	  	  /* Reactivate Radio interrupts
 		  HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
 		  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
@@ -326,8 +319,10 @@ int main(void)
 
 		  HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
 		  HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
+		  */
 
 		  // Target euler angles: PID reference
+	      //HAL_Delay(5);
 		  get_target_euler(&rc_ref_euler, &rc_comm_temp);
 		  orientation_update(euler_est);
 
@@ -335,8 +330,8 @@ int main(void)
 		  imu_est_euler.pitch = euler_est[1];
 		  imu_est_euler.yaw   = euler_est[2];
 
-		  control_error.p_error[0] = rc_ref_euler.roll - imu_est_euler.roll;
-		  control_error.p_error[1] = rc_ref_euler.pitch - imu_est_euler.pitch;
+		  control_error.p_error[0] = rc_ref_euler.roll - imu_est_euler.roll ; //+26000
+		  control_error.p_error[1] = rc_ref_euler.pitch - imu_est_euler.pitch ; //  -36900;
 		  control_error.p_error[2] = rc_ref_euler.yaw - imu_est_euler.yaw;
 
 		  for (int i = 0; i < 3; i++) {
@@ -376,12 +371,19 @@ int main(void)
 
 
 		  // Mixing formula
-		  motor_pwm[0] = - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
-		  motor_pwm[1] = + out_pid.pitch - out_pid.roll - out_pid.yaw;//should be the front left motor
-		  motor_pwm[2] = + out_pid.pitch + out_pid.roll + out_pid.yaw;// should be the front right motor
-		  motor_pwm[3] = - out_pid.pitch + out_pid.roll - out_pid.yaw;//should be the back right motor motor_throttle ;
+		  motor_pwm[2] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
+		  motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw; //should be the front left motor
+		  motor_pwm[0] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw; // should be the front right motor
+		  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw; //should be the back right motor motor_throttle ;
 
-		  set_motor_pwm(motor_pwm);
+		  //set_motor_pwm(motor_pwm);
+		  if (counter == 3000) {
+				  set_motor_pwm(motor_pwm);
+		  } else {
+			  counter++;
+		  }
+
+
 
 
   }

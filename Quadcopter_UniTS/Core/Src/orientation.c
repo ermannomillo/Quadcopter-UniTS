@@ -3,7 +3,7 @@
 #include "orientation.h"
 #include "main.h"  // for HAL_GetTick()
 
-static int euler_offset[2] = {-179180, -637};
+static int euler_offset[2] = {-179303, 13};
 static int gyro_offset[3] = {-80, 25, 206};
 static int gyro_data[3];
 static int gyro_delta[3];
