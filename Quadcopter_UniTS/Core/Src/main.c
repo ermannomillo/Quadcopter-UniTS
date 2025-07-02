@@ -205,12 +205,14 @@ int main(void)
   MX_TIM15_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+  /*starting timer 1 at 50 hz for motor pwm generation, one channel for each motor*/
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
-
+  /*rc command reading, one timer for each type of command and 2 channels for each type
+  only one generates an interrupt (ch_1) and is used to measure period and the other one is used to measure duty cycle ch_2*/
   HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
   HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
@@ -228,6 +230,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  /* ESC initialization*/	
 
     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);  // 1ms if period is 2000 ticks
     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 100);
@@ -244,11 +247,11 @@ int main(void)
 
 
   set_motor_pwm_zero(motor_pwm);
-  set_motor_pwm(motor_pwm);
+  set_motor_pwm(motor_pwm); /*checks for limits and writes in registers the values */
 
 
-  imu_init();
-  orientation_init();
+  imu_init(); /*activates and initialize the gyro (writes 0 on the wake up register of the sensor)*/
+  orientation_init(); /*saves with hal_get_tick the time instant*/
 
 
   int i = 0;
@@ -323,8 +326,8 @@ int main(void)
 
 		  // Target euler angles: PID reference
 	      //HAL_Delay(5);
-		  get_target_euler(&rc_ref_euler, &rc_comm_temp);
-		  orientation_update(euler_est);
+		  get_target_euler(&rc_ref_euler, &rc_comm_temp);  /*read rc vars*/
+		  orientation_update(euler_est); /*read imu data*/
 
 		  imu_est_euler.roll  = euler_est[0];
 		  imu_est_euler.pitch = euler_est[1];
