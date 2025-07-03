@@ -3,7 +3,7 @@
 
 #include "stm32h7xx_hal.h"
 
-#define MOTOR_MAX_PWM     221
+#define MOTOR_MAX_PWM     180 // 221
 #define MOTOR_MIN_PWM     100
 
 void set_motor_pwm(uint16_t motor_pwm[]);

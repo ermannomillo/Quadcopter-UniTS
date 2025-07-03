@@ -30,6 +30,8 @@
 #include "filter.h"
 #include "imu.h"
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* USER CODE END Includes */
 
@@ -52,7 +54,10 @@
 
 I2C_HandleTypeDef hi2c1;
 
+IWDG_HandleTypeDef hiwdg1;
+
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim5;
@@ -75,11 +80,14 @@ static void MX_TIM4_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM15_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_TIM2_Init(void);
+static void MX_IWDG1_Init(void);
 /* USER CODE BEGIN PFP */
 
 Radio rc_comm_temp;
 Euler rc_ref_euler, imu_est_euler;
 uint16_t motor_pwm[4];
+uint16_t buffer_motor_pwm[4];
 
 PID_Error control_error;
 PID_Error former_error;
@@ -91,9 +99,9 @@ int16_t motor_throttle;
 float dt;
 
 
-float Kp[3] = {0.00037*0.6*0.8, 0.00024*0.6, 0}; // 0.00037*0.6*0.8,
-float Ki[3] = {0, 0, 0};
-float Kd[3] = {0.00037*0.8*1/8, 0.00024*0.8*1/8, 0}; //0.00037*0.8*1/8
+float Kp[3] = {0.000205, 0, 0}; //
+float Ki[3] = {0, 0, 0}; // 2*0.000205*0.6*2
+float Kd[3] = {0,0,0}; // 0.000205*0.6/8/2
 
 
 volatile uint32_t cycle_rc_0 = 0;
@@ -123,6 +131,8 @@ uint16_t offset_rc1;
 uint16_t offset_rc2;
 uint16_t offset_rc3;
 
+volatile uint16_t motor_update_flag;
+volatile uint16_t freq_motor = 0;
 
 /* USER CODE END PFP */
 
@@ -148,7 +158,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-    rc_ref_euler.pitch =  0;
 	rc_ref_euler.roll =  0;
 	rc_ref_euler.yaw =  0;
 
@@ -204,15 +213,15 @@ int main(void)
   MX_TIM5_Init();
   MX_TIM15_Init();
   MX_I2C1_Init();
+  MX_TIM2_Init();
+  MX_IWDG1_Init();
   /* USER CODE BEGIN 2 */
-  /*starting timer 1 at 50 hz for motor pwm generation, one channel for each motor*/
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
-  /*rc command reading, one timer for each type of command and 2 channels for each type
-  only one generates an interrupt (ch_1) and is used to measure period and the other one is used to measure duty cycle ch_2*/
+
   HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
   HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
@@ -230,7 +239,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  /* ESC initialization*/	
 
     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);  // 1ms if period is 2000 ticks
     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 100);
@@ -247,12 +255,13 @@ int main(void)
 
 
   set_motor_pwm_zero(motor_pwm);
-  set_motor_pwm(motor_pwm); /*checks for limits and writes in registers the values */
+  set_motor_pwm(motor_pwm);
 
 
-  imu_init(); /*activates and initialize the gyro (writes 0 on the wake up register of the sensor)*/
-  orientation_init(); /*saves with hal_get_tick the time instant*/
+  imu_init();
+  orientation_init();
 
+  MX_IWDG1_Init();
 
   int i = 0;
   while ( i < NUM_ITERATIONS) {
@@ -310,24 +319,10 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  	  /* Reactivate Radio interrupts
-		  HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
-		  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
-
-		  HAL_TIM_IC_Start(&htim4, TIM_CHANNEL_2);
-		  HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
-
-		  HAL_TIM_IC_Start(&htim5, TIM_CHANNEL_2);
-		  HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_1);
-
-		  HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
-		  HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
-		  */
 
 		  // Target euler angles: PID reference
-	      //HAL_Delay(5);
-		  get_target_euler(&rc_ref_euler, &rc_comm_temp);  /*read rc vars*/
-		  orientation_update(euler_est); /*read imu data*/
+		  get_target_euler(&rc_ref_euler, &rc_comm_temp);
+		  orientation_update(euler_est);
 
 		  imu_est_euler.roll  = euler_est[0];
 		  imu_est_euler.pitch = euler_est[1];
@@ -338,26 +333,25 @@ int main(void)
 		  control_error.p_error[2] = rc_ref_euler.yaw - imu_est_euler.yaw;
 
 		  for (int i = 0; i < 3; i++) {
-		  			  control_error.d_error[i] = control_error.p_error[i] - former_error.p_error[i];
+		  			  control_error.d_error[i] = (control_error.p_error[i] - former_error.p_error[i])/dt;
 		  			  control_error.i_error[i] += control_error.p_error[i] * dt;
 		  		  }
+
+		  // Anti-windup
+		  		  for (int i = 0; i < 3; i++) {
+		  			  if (control_error.i_error[i] > I_TERM_LIMIT)
+		  				  control_error.i_error[i] = I_TERM_LIMIT;
+		  			  else if (control_error.i_error[i] < -I_TERM_LIMIT)
+		  				  control_error.i_error[i] = -I_TERM_LIMIT;
+		  		  }
+
 		  // Update former errors
 		  		  for (int i = 0; i < 3; i++) {
 		  			  former_error.p_error[i] = control_error.p_error[i];
 		  		      former_error.i_error[i] = control_error.i_error[i];
 		  		  }
 
-		  motor_throttle = 0.80f * (float)rc_comm_temp.THR / RC_FULLSCALE * MOTOR_MAX_PWM + MOTOR_MIN_PWM * (1-  (float)rc_comm_temp.THR / RC_FULLSCALE);  // Scaled throttle
-
-
-		  // Anti-windup
-		  for (int i = 0; i < 3; i++) {
-		      if (control_error.i_error[i] > I_TERM_LIMIT)
-		          control_error.i_error[i] = I_TERM_LIMIT;
-		      else if (control_error.i_error[i] < -I_TERM_LIMIT)
-		          control_error.i_error[i] = -I_TERM_LIMIT;
-		  }
-
+		  motor_throttle = 0.80f * (float)rc_comm_temp.THR / RC_FULLSCALE * MOTOR_MAX_PWM + MOTOR_MIN_PWM * (1 - (float)rc_comm_temp.THR / RC_FULLSCALE);  // Scaled throttle
 
 		  // PID control output
 		  out_pid.roll = Kp[0] * control_error.p_error[0] +
@@ -373,11 +367,25 @@ int main(void)
 		                Kd[2] * control_error.d_error[2];
 
 
-		  // Mixing formula
-		  motor_pwm[2] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
-		  motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw; //should be the front left motor
-		  motor_pwm[0] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw; // should be the front right motor
-		  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw; //should be the back right motor motor_throttle ;
+		  motor_update_flag = 0;
+
+		  if( abs(imu_est_euler.roll) < 90000 && abs(imu_est_euler.pitch) < 90000)  {
+
+			  // Mixing formula
+			  motor_pwm[2] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
+			  motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw; //should be the front left motor
+			  motor_pwm[0] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw; // should be the front right motor
+			  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw; //should be the back right motor motor_throttle ;
+		  }else {
+			  motor_pwm[2] = MOTOR_MIN_PWM ;
+			  motor_pwm[1] = MOTOR_MIN_PWM;
+			  motor_pwm[0] = MOTOR_MIN_PWM ;
+			  motor_pwm[3] = MOTOR_MIN_PWM ;
+  	  	  }
+
+		  motor_update_flag = 1;
+
+		  memcpy(buffer_motor_pwm, motor_pwm, 4);
 
 		  //set_motor_pwm(motor_pwm);
 		  if (counter == 3000) {
@@ -385,9 +393,6 @@ int main(void)
 		  } else {
 			  counter++;
 		  }
-
-
-
 
   }
   /* USER CODE END 3 */
@@ -418,8 +423,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_LSI
+                              |RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
@@ -500,6 +507,35 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief IWDG1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IWDG1_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG1_Init 0 */
+
+  /* USER CODE END IWDG1_Init 0 */
+
+  /* USER CODE BEGIN IWDG1_Init 1 */
+
+  /* USER CODE END IWDG1_Init 1 */
+  hiwdg1.Instance = IWDG1;
+  hiwdg1.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg1.Init.Window = 4095;
+  hiwdg1.Init.Reload = 999;
+  if (HAL_IWDG_Init(&hiwdg1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG1_Init 2 */
+
+  /* USER CODE END IWDG1_Init 2 */
 
 }
 
@@ -592,6 +628,51 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 2 */
   HAL_TIM_MspPostInit(&htim1);
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 1499;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 1999;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
 
 }
 
@@ -1050,6 +1131,21 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_TIM_PeriodElapsedCAllback(TIM_HandleTypeDef *htim) {
+
+	if (htim->Instance == TIM2 ){
+		freq_motor = 1;
+		if(motor_update_flag) {
+			set_motor_pwm(motor_pwm);
+		}else {
+			set_motor_pwm(buffer_motor_pwm);
+		}
+		freq_motor = 0;
+	}
+
+}
+
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM3)
@@ -1062,7 +1158,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
     		float duty_center = (float)offset_rc0 / (float)cycle_rc_0;
     		channel_mag_0 = (duty_actual - duty_center) / (1.0f - duty_center);
     		rc_comm_temp.AIL = channel_mag_0 * RC_FULLSCALE;
-
+    		HAL_IWDG_Refresh(&hiwdg1);
     	}
     }
 
@@ -1077,7 +1173,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
         		channel_mag_1 = (duty_actual - duty_center) / (1.0f - duty_center);
 
         		rc_comm_temp.ELE = channel_mag_1 * RC_FULLSCALE;
-
+        		HAL_IWDG_Refresh(&hiwdg1);
         	}
     }
 
@@ -1092,7 +1188,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
                     channel_mag_2 = (duty_actual - duty_center) / (1.0f - duty_center);
 
             		rc_comm_temp.RUD = channel_mag_2 * RC_FULLSCALE;
-
+            		HAL_IWDG_Refresh(&hiwdg1);
             	}
             }
     if (htim->Instance == TIM15)
@@ -1104,7 +1200,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
             		float min_rc3 = (float) offset_rc3 / (float) cycle_rc_3;
             		channel_mag_3 = ((float) period_rc_3 / (float) cycle_rc_3  - min_rc3) / (1 - min_rc3);
             		rc_comm_temp.THR =  channel_mag_3 * RC_FULLSCALE;
-
+            		HAL_IWDG_Refresh(&hiwdg1);
             	}
             }
 
