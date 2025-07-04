@@ -10,17 +10,17 @@
 
 typedef struct
 {
-    float p_error[3];
-    float i_error[3];
-    float d_error[3];
+	float p_error[3];
+	float i_error[3];
+	float d_error[3];
 
 }PID_Error;
 
 typedef struct
 {
-    float pitch;
-    float roll;
-    float yaw;
+	float pitch;
+	float roll;
+	float yaw;
 
 }PID_Out;
 

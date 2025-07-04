@@ -4,7 +4,7 @@
 
 typedef struct
 {
-    float pitch, roll, yaw;
+	float pitch, roll, yaw;
 }Euler;
 
 
