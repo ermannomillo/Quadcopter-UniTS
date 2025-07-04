@@ -7,7 +7,7 @@
 const float max_pitch_rad = PI*PITCH_MAX_DEG/180.0f;
 const float max_roll_rad = PI*ROLL_MAX_DEG/180.0f;
 const float max_yaw_rad = PI*YAW_MAX_DEG/180.0f;
-int t1;
+int temp;
 
 extern volatile uint32_t pulse_on_rc_0;
 extern volatile uint32_t pulse_on_rc_1;
@@ -22,37 +22,45 @@ extern uint16_t offset_rc_3;
 
 void get_target_euler(Euler *euler_rc, Radio *rc_comm)
 {
-	t1 = rc_comm->ELE;
-	if (t1 > RC_FULLSCALE)
-		t1 = RC_FULLSCALE;
-	else if (t1 < -RC_FULLSCALE)
-		t1 = - RC_FULLSCALE;
-	euler_rc->pitch =  (int)( (-t1 * max_pitch_rad / RC_FULLSCALE) * RAD_TO_MDEG);
+	/*
+	 * Convert the RC commands to reference euler angle
+	 */
 
-	t1 = rc_comm->AIL;
-	if (t1 > RC_FULLSCALE)
-		t1 = RC_FULLSCALE;
-	else if (t1 < -RC_FULLSCALE)
-		t1 = - RC_FULLSCALE;
-	euler_rc->roll =  (int)((-t1 * max_roll_rad / RC_FULLSCALE) * RAD_TO_MDEG);
+	temp = rc_comm->ELE;
+	if (temp > RC_FULLSCALE)
+		temp = RC_FULLSCALE;
+	else if (temp < -RC_FULLSCALE)
+		temp = - RC_FULLSCALE;
+	euler_rc->pitch =  (int)( (-temp * max_pitch_rad / RC_FULLSCALE) * RAD_TO_MDEG);
 
-	t1 = rc_comm->RUD;
-	if (t1 > RC_FULLSCALE)
-		t1 = RC_FULLSCALE;
-	else if (t1 < -RC_FULLSCALE)
-		t1 = - RC_FULLSCALE;
+	temp = rc_comm->AIL;
+	if (temp > RC_FULLSCALE)
+		temp = RC_FULLSCALE;
+	else if (temp < -RC_FULLSCALE)
+		temp = - RC_FULLSCALE;
+	euler_rc->roll =  (int)((-temp * max_roll_rad / RC_FULLSCALE) * RAD_TO_MDEG);
 
-	if(t1 > YAW_DEAD_THR)
+	temp = rc_comm->RUD;
+	if (temp > RC_FULLSCALE)
+		temp = RC_FULLSCALE;
+	else if (temp < -RC_FULLSCALE)
+		temp = - RC_FULLSCALE;
+
+	if(temp > YAW_DEAD_THRD)
 	{
 		euler_rc->yaw = euler_rc->yaw +  (int)(max_yaw_rad * RAD_TO_MDEG);
 	}
-	else if(t1 < -YAW_DEAD_THR)
+	else if(temp < -YAW_DEAD_THRD)
 	{
 		euler_rc->yaw =  euler_rc->yaw -  (int)(max_yaw_rad * RAD_TO_MDEG);
 	}
 }
 
-void calibrate_rc() {
+void calibrate_rc()
+{
+	/*
+	 * Estimate RC offsets at rest
+	 */
 
 	uint16_t sum_pulse_on_rc_0_cal = 0;
 	uint16_t sum_pulse_on_rc_1_cal = 0;
@@ -95,5 +103,4 @@ void calibrate_rc() {
 		}
 	}
 	offset_rc_3 = (int) sum_pulse_on_rc_3_cal / NUM_ITERATIONS_RC_CAL;
-
 }

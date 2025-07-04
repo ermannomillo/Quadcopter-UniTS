@@ -45,7 +45,11 @@ void set_motor_pwm_zero(uint16_t motor_pwm[])
 	motor_pwm[3] = MOTOR_MIN_PWM;
 }
 
-void init_motors(){
+void init_motors()
+{
+	/*
+	 * Initialise motors and set them to rest
+	 */
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);  // 1ms if period is 2000 ticks
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 100);
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 100);
@@ -66,10 +70,15 @@ void init_motors(){
 
 }
 
-void mixing_formula(uint16_t motor_pwm[], uint16_t motor_throttle,  PID_Out out_pid) {
+void mixing_formula(uint16_t motor_pwm[], uint16_t motor_throttle,  PID_Out out_pid)
+{
+	/*
+	 * Drone mixing formula
+	 */
+
 	motor_pwm[2] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
 	motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw; //should be the front left motor
 	motor_pwm[0] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw; // should be the front right motor
-	motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw; //should be the back right motor motor_throttle ;
+	motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw; //should be the back right motor motor_throttle
 }
 

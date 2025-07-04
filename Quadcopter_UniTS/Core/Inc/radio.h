@@ -15,7 +15,7 @@
 #define YAW_MAX_DEG     (60.0f * RADIO_SAMPLING_TIME)
 #define YAW_MIN_RAD     0.0872
 
-#define YAW_DEAD_THR    300
+#define YAW_DEAD_THRD    300
 
 #define NUM_ITERATIONS_RC_CAL 10
 
@@ -26,7 +26,6 @@ typedef struct
 {
 	float AIL, ELE, THR, RUD;
 } Radio;
-
 
 
 void get_target_euler(Euler *euler_rc, Radio *rc_comm);

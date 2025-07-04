@@ -160,9 +160,6 @@ int main(void)
 	rc_comm_temp.RUD = 0;
 	rc_comm_temp.THR = 0;
 
-
-
-
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -200,8 +197,6 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
-
-
 	/*rc command reading, one timer for each type of command and 2 channels for each type
     only one generates an interrupt (ch_1) and is used to measure period
     and the other one is used to measure duty cycle ch_2
@@ -221,14 +216,10 @@ int main(void)
 	HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
 	HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
 
-
-
-
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-
 
 	init_motors();
 	imu_init();
@@ -236,7 +227,7 @@ int main(void)
 	calibrate_rc();
 
 	MX_IWDG1_Init();
-	HAL_TIM_Base_Start_IT(&htim2);
+	HAL_TIM_Base_Start_IT(&htim2); // Start motor PWM timer
 
 	uint16_t stable_init_counter = 0;
 
@@ -246,9 +237,8 @@ int main(void)
 
 		/* USER CODE BEGIN 3 */
 
-		// Target euler angles: PID reference
-		get_target_euler(&rc_ref_euler, &rc_comm_temp);  /*convert rc vars to reference euler angles*/
-		orientation_update(&imu_est_euler); /*Get actual euler angle from IMU*/
+		get_target_euler(&rc_ref_euler, &rc_comm_temp);  /* Convert rc commands to reference euler angles*/
+		orientation_update(&imu_est_euler); /* Get actual euler angle from IMU*/
 
 		motor_throttle = MAX_THROTTLE_RC * (float)rc_comm_temp.THR / RC_FULLSCALE * MOTOR_MAX_PWM + MOTOR_MIN_PWM * (1 - (float)rc_comm_temp.THR / RC_FULLSCALE);  // Scaled throttle
 
@@ -268,9 +258,9 @@ int main(void)
 		motor_atom_flag = 1;
 		// --------------------------------------------------
 
-		memcpy(buffer_motor_pwm, motor_pwm, 4); // update motor commands buffer
+		memcpy(buffer_motor_pwm, motor_pwm, 4); // Update motor commands buffer
 
-		// Initial free loops to stabilize system at rest
+		// Initial free loops to stabilise system at rest
 		if (stable_init_counter == STABLE_INIT_CYCLES) {
 			motor_arming_flag = 1;
 		} else {
@@ -1018,6 +1008,7 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCAllback(TIM_HandleTypeDef *htim) {
 
 	if (htim->Instance == TIM2 && motor_arming_flag){
+		// Set motor with most updated data
 		if(motor_atom_flag) {
 			set_motor_pwm(motor_pwm);
 		}else {
@@ -1033,13 +1024,14 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 		period_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 		pulse_on_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+
 		if (period_rc_0 > 4350 && period_rc_0 < 4370 && pulse_on_rc_0 > 0 && period_rc_0 > pulse_on_rc_0 ) {
 			float duty_actual = (float)pulse_on_rc_0 / (float)period_rc_0;
 			float duty_center = (float)offset_rc_0 / (float)period_rc_0;
-			norm_comm_rc_0 = (duty_actual - duty_center) / (1.0f - duty_center);
+			norm_comm_rc_0 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
 			rc_comm_temp.AIL = norm_comm_rc_0 * RC_FULLSCALE;
 
-			HAL_IWDG_Refresh(&hiwdg1);
+			HAL_IWDG_Refresh(&hiwdg1); // pet the watchdog
 		}
 	}
 
@@ -1048,13 +1040,14 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 		period_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 		pulse_on_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+
 		if (period_rc_1 > 4350 && period_rc_1 < 4370 && pulse_on_rc_1 > 0 && period_rc_1 > pulse_on_rc_1) {
 			float duty_actual = (float)pulse_on_rc_1 / (float)period_rc_1;
 			float duty_center = (float)offset_rc_1 / (float)period_rc_1;
-			norm_comm_rc_1 = (duty_actual - duty_center) / (1.0f - duty_center);
+			norm_comm_rc_1 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
 			rc_comm_temp.ELE = norm_comm_rc_1 * RC_FULLSCALE;
 
-			HAL_IWDG_Refresh(&hiwdg1);
+			HAL_IWDG_Refresh(&hiwdg1); // pet the watchdog
 		}
 	}
 
@@ -1063,13 +1056,14 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 		period_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 		pulse_on_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+
 		if (period_rc_2 > 4350 && period_rc_2 < 4370 && pulse_on_rc_2 > 0 && period_rc_2 > pulse_on_rc_2) {
 			float duty_actual = (float)pulse_on_rc_2 / (float)period_rc_2;
 			float duty_center = (float)offset_rc_2 / (float)period_rc_2;
-			norm_comm_rc_2 = (duty_actual - duty_center) / (1.0f - duty_center);
+			norm_comm_rc_2 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
 			rc_comm_temp.RUD = norm_comm_rc_2 * RC_FULLSCALE;
 
-			HAL_IWDG_Refresh(&hiwdg1);
+			HAL_IWDG_Refresh(&hiwdg1); // pet the watchdog
 		}
 	}
 	if (htim->Instance == TIM15)
@@ -1077,12 +1071,13 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 		period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 		pulse_on_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+
 		if (period_rc_3 > 4350 && period_rc_3 < 4370 && pulse_on_rc_3 > 0 && period_rc_3 > pulse_on_rc_3) {
 			float min_rc3 = (float) offset_rc_3 / (float) period_rc_3;
-			norm_comm_rc_3 = ((float) pulse_on_rc_3 / (float) period_rc_3  - min_rc3) / (1 - min_rc3);
+			norm_comm_rc_3 = ((float) pulse_on_rc_3 / (float) period_rc_3  - min_rc3) / (1 - min_rc3); // Normalize command to [0,1]
 			rc_comm_temp.THR =  norm_comm_rc_3 * RC_FULLSCALE;
 
-			HAL_IWDG_Refresh(&hiwdg1);
+			HAL_IWDG_Refresh(&hiwdg1); // pet the watchdog
 		}
 	}
 

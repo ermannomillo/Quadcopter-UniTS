@@ -15,6 +15,10 @@ extern float dt;
 
 void pid_update(PID_Out *out_pid, Euler imu_est_euler, Euler rc_ref_euler, uint16_t motor_throttle) {
 
+	/*
+	 * Compute PID control, given the current error
+	 */
+
 	control_error.p_error[0] = rc_ref_euler.roll - imu_est_euler.roll ;
 	control_error.p_error[1] = rc_ref_euler.pitch - imu_est_euler.pitch ;
 	control_error.p_error[2] = rc_ref_euler.yaw - imu_est_euler.yaw;
@@ -54,6 +58,10 @@ void pid_update(PID_Out *out_pid, Euler imu_est_euler, Euler rc_ref_euler, uint1
 
 
 void init_pid() {
+
+	/*
+	 * Initialise PID errors
+	 */
 
 	for (int i = 0; i < 3; i++) {
 		control_error.p_error[i] = 0;
