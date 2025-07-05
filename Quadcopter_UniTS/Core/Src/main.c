@@ -225,8 +225,9 @@ int main(void)
 	imu_init();
 	orientation_init(); /*saves with hal_get_tick the time instant*/
 	calibrate_rc();
+	init_pid();
 
-	MX_IWDG1_Init();
+	MX_IWDG1_Init(); // Start watchdog
 	HAL_TIM_Base_Start_IT(&htim2); // Start motor PWM timer
 
 	uint16_t stable_init_counter = 0;
