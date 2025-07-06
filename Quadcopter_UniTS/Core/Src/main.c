@@ -189,7 +189,6 @@ int main(void)
 	MX_TIM15_Init();
 	MX_I2C1_Init();
 	MX_TIM2_Init();
-	MX_IWDG1_Init();
 	/* USER CODE BEGIN 2 */
 	/*starting timer 1 at 50 hz for motor pwm generation, one channel for each motor*/
 	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -227,7 +226,7 @@ int main(void)
 	calibrate_rc();
 	init_pid();
 
-	MX_IWDG1_Init(); // Start watchdog
+	MX_IWDG1_Init(); // start watchdog
 	HAL_TIM_Base_Start_IT(&htim2); // Start motor PWM timer
 
 	uint16_t stable_init_counter = 0;
@@ -259,7 +258,7 @@ int main(void)
 		motor_atom_flag = 1;
 		// --------------------------------------------------
 
-		memcpy(buffer_motor_pwm, motor_pwm, 4); // Update motor commands buffer
+		memcpy(buffer_motor_pwm, motor_pwm, 4 * sizeof(uint16_t)); // Update motor commands buffer
 
 		// Initial free loops to stabilise system at rest
 		if (stable_init_counter == STABLE_INIT_CYCLES) {
