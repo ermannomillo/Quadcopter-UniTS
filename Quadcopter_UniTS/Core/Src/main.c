@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -24,7 +24,6 @@
 
 #include "motor.h"
 #include "radio.h"
-#include "quaternion.h"
 #include "control.h"
 #include "orientation.h"
 #include "filter.h"
@@ -42,7 +41,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define STABLE_INIT_CYCLES 3000
+#define MAX_SAFE_ANGLE 10000000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -85,67 +85,61 @@ static void MX_IWDG1_Init(void);
 /* USER CODE BEGIN PFP */
 
 Radio rc_comm_temp;
-Euler rc_ref_euler, imu_est_euler;
-uint16_t motor_pwm[4];
-uint16_t buffer_motor_pwm[4];
+uint16_t motor_pwm[4] = {0.0, 0.0, 0.0, 0.0};
 
-PID_Error control_error;
-PID_Error former_error;
-PID_Out out_pid;
-
-
-int euler_est[3];
-int16_t motor_throttle;
-float dt;
-
-
-float Kp[3] = {0.000205, 0, 0}; //
-float Ki[3] = {0, 0, 0}; // 2*0.000205*0.6*2
-float Kd[3] = {0,0,0}; // 0.000205*0.6/8/2
-
-
-volatile uint32_t cycle_rc_0 = 0;
-volatile uint32_t cycle_rc_1 = 0;
-volatile uint32_t cycle_rc_2 = 0;
-volatile uint32_t cycle_rc_3 = 0;
 
 volatile uint32_t period_rc_0 = 0;
 volatile uint32_t period_rc_1 = 0;
 volatile uint32_t period_rc_2 = 0;
 volatile uint32_t period_rc_3 = 0;
 
-volatile float channel_mag_0 = 0;
-volatile float channel_mag_1 = 0;
-volatile float channel_mag_2 = 0;
-volatile float channel_mag_3 = 0;
+volatile uint32_t pulse_on_rc_0 = 0;
+volatile uint32_t pulse_on_rc_1 = 0;
+volatile uint32_t pulse_on_rc_2 = 0;
+volatile uint32_t pulse_on_rc_3 = 0;
 
-#define NUM_ITERATIONS 10
+volatile float norm_comm_rc_0 = 0;
+volatile float norm_comm_rc_1 = 0;
+volatile float norm_comm_rc_2 = 0;
+volatile float norm_comm_rc_3 = 0;
 
-uint16_t rc_0_calibration;
-uint16_t rc_1_calibration;
-uint16_t rc_2_calibration;
-uint16_t rc_3_calibration;
+uint16_t offset_rc_0 = 0;
+uint16_t offset_rc_1 = 0;
+uint16_t offset_rc_2 = 0;
+uint16_t offset_rc_3 = 0;
 
-uint16_t offset_rc0;
-uint16_t offset_rc1;
-uint16_t offset_rc2;
-uint16_t offset_rc3;
+volatile float dt_imu = 0.001;
+volatile float dt_pid = 0.001;
 
-volatile uint16_t motor_update_flag;
-volatile uint16_t freq_motor = 0;
+volatile uint16_t motor_atom_flag;
+volatile uint16_t motor_arming_flag = 0;
+volatile uint16_t imu_flag = 0;
+volatile uint16_t pid_flag = 0;
+
+PID_Error control_error;
+PID_Error former_error;
+
+volatile Euler rc_ref_euler, imu_est_euler;
+
+volatile PID_Out out_pid;
+
+volatile uint16_t motor_throttle = MOTOR_MIN_PWM;
+volatile uint16_t t = 0;
+
+volatile uint32_t cycle_count = 0;
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 int _write(int32_t file, uint8_t *ptr, int32_t len)
-  {
-      for (int i = 0; i < len; i++)
-      {
-          ITM_SendChar(*ptr++);
-      }
-      return len;
-  }
+{
+	for (int i = 0; i < len; i++)
+	{
+		ITM_SendChar(*ptr++);
+	}
+	return len;
+}
 
 
 /* USER CODE END 0 */
@@ -158,6 +152,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
+ 	rc_ref_euler.pitch =  0;
 	rc_ref_euler.roll =  0;
 	rc_ref_euler.yaw =  0;
 
@@ -169,21 +165,6 @@ int main(void)
 	rc_comm_temp.ELE = 0;
 	rc_comm_temp.RUD = 0;
 	rc_comm_temp.THR = 0;
-
-	for (int i = 0; i < 3; i++) {
-		euler_est[i] = 0;
-		control_error.p_error[i] = 0;
-		control_error.i_error[i] = 0;
-		control_error.d_error[i] = 0;
-		former_error.p_error[i] = 0;
-		former_error.i_error[i] = 0;
-		former_error.d_error[i] = 0;
-	}
-
-	motor_throttle = 0;
-	dt = 0.001;
-
-
 
   /* USER CODE END 1 */
 
@@ -216,185 +197,88 @@ int main(void)
   MX_TIM2_Init();
   MX_IWDG1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+	/*starting timer 1 at 50 hz for motor pwm generation, one channel for each motor*/
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
+	/*rc command reading, one timer for each type of command and 2 channels for each type
+    only one generates an interrupt (ch_1) and is used to measure period
+    and the other one is used to measure duty cycle ch_2
+	 */
 
-  HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
-  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+	HAL_TIM_IC_Start(&htim2, TIM_CHANNEL_2);
 
-  HAL_TIM_IC_Start(&htim4, TIM_CHANNEL_2);
-  HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
+	HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
+	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
-  HAL_TIM_IC_Start(&htim5, TIM_CHANNEL_2);
-  HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_1);
+	HAL_TIM_IC_Start(&htim4, TIM_CHANNEL_2);
+	HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
 
-  HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
-  HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
+	HAL_TIM_IC_Start(&htim5, TIM_CHANNEL_2);
+	HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_1);
 
+	HAL_TIM_IC_Start(&htim15, TIM_CHANNEL_2);
+	HAL_TIM_IC_Start_IT(&htim15, TIM_CHANNEL_1);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 100);  // 1ms if period is 2000 ticks
-    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 100);
-    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 100);
-    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 100);
+	init_motors();
+	imu_init();
+	orientation_init(); /*saves with hal_get_tick the time instant*/
+	calibrate_rc();
+	init_pid();
 
-     HAL_Delay(3000);  // Wait for ESC to initialize
+	MX_IWDG1_Init(); // start watchdog
+	HAL_TIM_Base_Start_IT(&htim2); // Start motor PWM timer
 
-     // Optional: set mid-throttle (1.5 ms pulse width)
-     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 150);  // 1.5ms
-     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 150);
-     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 150);
-     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 150);
+	uint16_t stable_init_counter = 0;
+	set_motor_pwm_zero(motor_pwm);
 
-
-  set_motor_pwm_zero(motor_pwm);
-  set_motor_pwm(motor_pwm);
-
-
-  imu_init();
-  orientation_init();
-
-  MX_IWDG1_Init();
-
-  int i = 0;
-  while ( i < NUM_ITERATIONS) {
-
-      if (period_rc_0 > 3000 ) {
-    	  rc_0_calibration += period_rc_0;
-      	  i++;
-  	  }
-  }
-  offset_rc0 = (int) rc_0_calibration / NUM_ITERATIONS;
-
-  i = 0;
-    while ( i < NUM_ITERATIONS) {
-
-        if (period_rc_1 > 3000 ) {
-      	  rc_1_calibration += period_rc_1;
-        	  i++;
-    	  }
-    }
-    offset_rc1 = (int) rc_1_calibration / NUM_ITERATIONS;
-
-
-     i = 0;
-      while ( i < NUM_ITERATIONS) {
-
-          if (period_rc_2 > 3000 ) {
-        	  rc_2_calibration += period_rc_2;
-          	  i++;
-      	  }
-      }
-      offset_rc2 = (int) rc_2_calibration / NUM_ITERATIONS;
-
-
-      i = 0;
-        while ( i < NUM_ITERATIONS) {
-
-
-            if (period_rc_3 > 2000 ) {
-          	  rc_3_calibration += period_rc_3;
-          	  i++;
-        	}
-        }
-
-        offset_rc3 = (int) rc_3_calibration / NUM_ITERATIONS;
-
-
-  set_motor_pwm_zero(motor_pwm);
-  set_motor_pwm(motor_pwm);
-
-  int counter = 0;
-
-  while (1)
-  {
+	while (1)
+	{
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
+		get_target_euler(&rc_ref_euler, &rc_comm_temp);  /* Convert rc commands to reference euler angles*/
 
-		  // Target euler angles: PID reference
-		  get_target_euler(&rc_ref_euler, &rc_comm_temp);
-		  orientation_update(euler_est);
+		if (imu_flag){
+			orientation_update(&imu_est_euler); /* Get actual euler angle from IMU*/
+			imu_flag=0;
+		}
 
-		  imu_est_euler.roll  = euler_est[0];
-		  imu_est_euler.pitch = euler_est[1];
-		  imu_est_euler.yaw   = euler_est[2];
+		if (pid_flag){
+			motor_throttle = MAX_THROTTLE_RC * (float)rc_comm_temp.THR / RC_FULLSCALE * MOTOR_MAX_PWM + MOTOR_MIN_PWM * (1 - (float)rc_comm_temp.THR / RC_FULLSCALE);  // Scaled throttle
 
-		  control_error.p_error[0] = rc_ref_euler.roll - imu_est_euler.roll ; //+26000
-		  control_error.p_error[1] = rc_ref_euler.pitch - imu_est_euler.pitch ; //  -36900;
-		  control_error.p_error[2] = rc_ref_euler.yaw - imu_est_euler.yaw;
+			pid_update(&out_pid, imu_est_euler, rc_ref_euler, motor_throttle);
+			pid_flag = 0;
 
-		  for (int i = 0; i < 3; i++) {
-		  			  control_error.d_error[i] = (control_error.p_error[i] - former_error.p_error[i])/dt;
-		  			  control_error.i_error[i] += control_error.p_error[i] * dt;
-		  		  }
+			// Atomic motor PWM update -------------------------
 
-		  // Anti-windup
-		  		  for (int i = 0; i < 3; i++) {
-		  			  if (control_error.i_error[i] > I_TERM_LIMIT)
-		  				  control_error.i_error[i] = I_TERM_LIMIT;
-		  			  else if (control_error.i_error[i] < -I_TERM_LIMIT)
-		  				  control_error.i_error[i] = -I_TERM_LIMIT;
-		  		  }
+			// Safe angle check
+			if ((abs(imu_est_euler.roll) < MAX_SAFE_ANGLE && abs(imu_est_euler.pitch) < MAX_SAFE_ANGLE) && (motor_throttle > MOTOR_MIN_PWM)) {
+				mixing_formula(motor_pwm, motor_throttle, out_pid);
+			}else {
+				set_motor_pwm_zero(motor_pwm);
+			}
 
-		  // Update former errors
-		  		  for (int i = 0; i < 3; i++) {
-		  			  former_error.p_error[i] = control_error.p_error[i];
-		  		      former_error.i_error[i] = control_error.i_error[i];
-		  		  }
+		}
 
-		  motor_throttle = 0.80f * (float)rc_comm_temp.THR / RC_FULLSCALE * MOTOR_MAX_PWM + MOTOR_MIN_PWM * (1 - (float)rc_comm_temp.THR / RC_FULLSCALE);  // Scaled throttle
+		// --------------------------------------------------
 
-		  // PID control output
-		  out_pid.roll = Kp[0] * control_error.p_error[0] +
-		                 Ki[0] * control_error.i_error[0] +
-		                 Kd[0] * control_error.d_error[0];
+		// Initial free loops to stabilise system at rest
+		if (stable_init_counter == STABLE_INIT_CYCLES) {
+			motor_arming_flag = 1;
+		} else {
+			stable_init_counter++;
+		}
 
-		  out_pid.pitch = Kp[1] * control_error.p_error[1] +
-		                  Ki[1] * control_error.i_error[1] +
-		                  Kd[1] * control_error.d_error[1];
-
-		  out_pid.yaw = Kp[2] * control_error.p_error[2] +
-		                Ki[2] * control_error.i_error[2] +
-		                Kd[2] * control_error.d_error[2];
-
-
-		  motor_update_flag = 0;
-
-		  if( abs(imu_est_euler.roll) < 90000 && abs(imu_est_euler.pitch) < 90000)  {
-
-			  // Mixing formula
-			  motor_pwm[2] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
-			  motor_pwm[1] = motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw; //should be the front left motor
-			  motor_pwm[0] = motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw; // should be the front right motor
-			  motor_pwm[3] = motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw; //should be the back right motor motor_throttle ;
-		  }else {
-			  motor_pwm[2] = MOTOR_MIN_PWM ;
-			  motor_pwm[1] = MOTOR_MIN_PWM;
-			  motor_pwm[0] = MOTOR_MIN_PWM ;
-			  motor_pwm[3] = MOTOR_MIN_PWM ;
-  	  	  }
-
-		  motor_update_flag = 1;
-
-		  memcpy(buffer_motor_pwm, motor_pwm, 4);
-
-		  //set_motor_pwm(motor_pwm);
-		  if (counter == 3000) {
-				  set_motor_pwm(motor_pwm);
-		  } else {
-			  counter++;
-		  }
-
-  }
+	}
   /* USER CODE END 3 */
 }
 
@@ -652,7 +536,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 1499;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 1999;
+  htim2.Init.Period = 499;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -1050,8 +934,8 @@ static void MX_USB_OTG_HS_USB_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
@@ -1126,83 +1010,98 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
 
-void HAL_TIM_PeriodElapsedCAllback(TIM_HandleTypeDef *htim) {
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (htim->Instance == TIM2 ){
-		freq_motor = 1;
-		if(motor_update_flag) {
-			set_motor_pwm(motor_pwm);
-		}else {
-			set_motor_pwm(buffer_motor_pwm);
-		}
-		freq_motor = 0;
-	}
 
+		if(cycle_count == 3 && motor_arming_flag){
+			// Set motor with most updated data
+			set_motor_pwm(motor_pwm);
+		}
+
+		imu_flag = 1;
+
+		if (cycle_count == 1) {
+			pid_flag = 1;
+		}
+
+		if(cycle_count == 3) {
+			cycle_count = 0;
+		} else {
+			cycle_count++;
+		}
+	}
 }
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
-    if (htim->Instance == TIM3)
-    {
+	if (htim->Instance == TIM3)
+	{
 
-        cycle_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-        period_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-    	if (cycle_rc_0 > 4350 && cycle_rc_0 < 4370 && period_rc_0 > 0 && cycle_rc_0 > period_rc_0 ) {
-    		float duty_actual = (float)period_rc_0 / (float)cycle_rc_0;
-    		float duty_center = (float)offset_rc0 / (float)cycle_rc_0;
-    		channel_mag_0 = (duty_actual - duty_center) / (1.0f - duty_center);
-    		rc_comm_temp.AIL = channel_mag_0 * RC_FULLSCALE;
-    		HAL_IWDG_Refresh(&hiwdg1);
-    	}
-    }
+		period_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+		pulse_on_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
 
-    if (htim->Instance == TIM4)
-    {
+		if (period_rc_0 > 4350 && period_rc_0 < 4370 && pulse_on_rc_0 > 0 && period_rc_0 > pulse_on_rc_0 ) {
+			float duty_actual = (float)pulse_on_rc_0 / (float)period_rc_0;
+			float duty_center = (float)offset_rc_0 / (float)period_rc_0;
+			norm_comm_rc_0 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
+			rc_comm_temp.AIL = norm_comm_rc_0 * RC_FULLSCALE;
 
-            cycle_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-            period_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-        	if (cycle_rc_1 > 4350 && cycle_rc_1 < 4370 && period_rc_1 > 0 && cycle_rc_1 > period_rc_1) {
-        		float duty_actual = (float)period_rc_1 / (float)cycle_rc_1;
-        		float duty_center = (float)offset_rc1 / (float)cycle_rc_1;
-        		channel_mag_1 = (duty_actual - duty_center) / (1.0f - duty_center);
+			HAL_IWDG_Refresh(&hiwdg1); // pet the watchdog
+		}
+	}
 
-        		rc_comm_temp.ELE = channel_mag_1 * RC_FULLSCALE;
-        		HAL_IWDG_Refresh(&hiwdg1);
-        	}
-    }
+	if (htim->Instance == TIM4)
+	{
 
-    if (htim->Instance == TIM5)
-            {
+		period_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+		pulse_on_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
 
-                cycle_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-                period_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-            	if (cycle_rc_2 > 4350 && cycle_rc_2 < 4370 && period_rc_2 > 0 && cycle_rc_2 > period_rc_2) {
-            		float duty_actual = (float)period_rc_2 / (float)cycle_rc_2;
-                    float duty_center = (float)offset_rc2 / (float)cycle_rc_2;
-                    channel_mag_2 = (duty_actual - duty_center) / (1.0f - duty_center);
+		if (period_rc_1 > 4350 && period_rc_1 < 4370 && pulse_on_rc_1 > 0 && period_rc_1 > pulse_on_rc_1) {
+			float duty_actual = (float)pulse_on_rc_1 / (float)period_rc_1;
+			float duty_center = (float)offset_rc_1 / (float)period_rc_1;
+			norm_comm_rc_1 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
+			rc_comm_temp.ELE = norm_comm_rc_1 * RC_FULLSCALE;
 
-            		rc_comm_temp.RUD = channel_mag_2 * RC_FULLSCALE;
-            		HAL_IWDG_Refresh(&hiwdg1);
-            	}
-            }
-    if (htim->Instance == TIM15)
-            {
+			HAL_IWDG_Refresh(&hiwdg1); // pet the watchdog
+		}
+	}
 
-                cycle_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-                period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
-            	if (cycle_rc_3 > 4350 && cycle_rc_3 < 4370 && period_rc_3 > 0 && cycle_rc_3 > period_rc_3) {
-            		float min_rc3 = (float) offset_rc3 / (float) cycle_rc_3;
-            		channel_mag_3 = ((float) period_rc_3 / (float) cycle_rc_3  - min_rc3) / (1 - min_rc3);
-            		rc_comm_temp.THR =  channel_mag_3 * RC_FULLSCALE;
-            		HAL_IWDG_Refresh(&hiwdg1);
-            	}
-            }
+	if (htim->Instance == TIM5)
+	{
+
+		period_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+		pulse_on_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+
+		if (period_rc_2 > 4350 && period_rc_2 < 4370 && pulse_on_rc_2 > 0 && period_rc_2 > pulse_on_rc_2) {
+			float duty_actual = (float)pulse_on_rc_2 / (float)period_rc_2;
+			float duty_center = (float)offset_rc_2 / (float)period_rc_2;
+			norm_comm_rc_2 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
+			rc_comm_temp.RUD = norm_comm_rc_2 * RC_FULLSCALE;
+
+			HAL_IWDG_Refresh(&hiwdg1); // pet the watchdog
+		}
+	}
+	if (htim->Instance == TIM15)
+	{
+
+		period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+		pulse_on_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
+
+		if (period_rc_3 > 4350 && period_rc_3 < 4370 && pulse_on_rc_3 > 0 && period_rc_3 > pulse_on_rc_3) {
+			float min_rc3 = (float) offset_rc_3 / (float) period_rc_3;
+			norm_comm_rc_3 = ((float) pulse_on_rc_3 / (float) period_rc_3  - min_rc3) / (1 - min_rc3); // Normalize command to [0,1]
+			rc_comm_temp.THR =  norm_comm_rc_3 * RC_FULLSCALE;
+
+			HAL_IWDG_Refresh(&hiwdg1); // pet the watchdog
+		}
+	}
 
 
 }
@@ -1215,11 +1114,11 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1)
+	{
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -1234,7 +1133,7 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
+	/* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
