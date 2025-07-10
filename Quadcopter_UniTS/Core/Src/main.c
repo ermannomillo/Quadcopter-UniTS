@@ -42,7 +42,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define STABLE_INIT_CYCLES 3000
-#define MAX_SAFE_ANGLE 10000000
+#define MAX_SAFE_ANGLE 20000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -119,7 +119,7 @@ volatile uint16_t pid_flag = 0;
 PID_Error control_error;
 PID_Error former_error;
 
-volatile Euler rc_ref_euler, imu_est_euler;
+Euler rc_ref_euler, imu_est_euler;
 
 volatile PID_Out out_pid;
 
@@ -231,9 +231,10 @@ int main(void)
 	imu_init();
 	orientation_init(); /*saves with hal_get_tick the time instant*/
 	calibrate_rc();
+
 	init_pid();
 
-	//MX_IWDG1_Init(); // start watchdog
+	MX_IWDG1_Init(); // start watchdog
 	HAL_TIM_Base_Start_IT(&htim2); // Start motor PWM timer
 
 	uint16_t stable_init_counter = 0;

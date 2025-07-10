@@ -4,9 +4,9 @@
 
 
 // PID COEFFICIENTS
-float Kp[3] = {0, 0, 0}; //{0.000205, 0.000205, 0}; //
+float Kp[3] = {0.000205, 0.000205, 0}; //{0.000205, 0.000205, 0}; //
 float Ki[3] = {0, 0, 0}; // 2*0.000205*0.6*2
-float Kd[3] = {0,0,0}; // 0.000205*0.6/8/2
+float Kd[3] = { 0.000205*0.6/8/2,  0.000205*0.6/8/2,0}; // 0.000205*0.6/8/2
 
 extern PID_Error control_error;
 extern PID_Error former_error;
