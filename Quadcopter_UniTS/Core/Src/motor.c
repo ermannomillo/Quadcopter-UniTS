@@ -55,14 +55,15 @@ void init_motors()
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 100);
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 100);
 
-	HAL_Delay(3000);  // Wait for ESC to initialize
+	HAL_Delay(100);  // Wait for ESC to initialize
 
 	// Optional: set mid-throttle (1.5 ms pulse width)
+	/*
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 150);  // 1.5ms
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 150);
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 150);
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 150);
-
+*/
 	uint16_t motor_pwm[4];
 
 	set_motor_pwm_zero(motor_pwm);

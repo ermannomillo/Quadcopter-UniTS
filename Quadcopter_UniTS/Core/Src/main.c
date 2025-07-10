@@ -208,10 +208,10 @@ int main(void)
     and the other one is used to measure duty cycle ch_2
 	 */
 
-	HAL_TIM_IC_Start(&htim2, TIM_CHANNEL_2);
+
 
 	HAL_TIM_IC_Start(&htim3, TIM_CHANNEL_2);
-	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+ 	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
 	HAL_TIM_IC_Start(&htim4, TIM_CHANNEL_2);
 	HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
@@ -233,7 +233,7 @@ int main(void)
 	calibrate_rc();
 	init_pid();
 
-	MX_IWDG1_Init(); // start watchdog
+	//MX_IWDG1_Init(); // start watchdog
 	HAL_TIM_Base_Start_IT(&htim2); // Start motor PWM timer
 
 	uint16_t stable_init_counter = 0;
@@ -1047,7 +1047,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 		period_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 		pulse_on_rc_0 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
 
-		if (period_rc_0 > 4350 && period_rc_0 < 4370 && pulse_on_rc_0 > 0 && period_rc_0 > pulse_on_rc_0 ) {
+		if (period_rc_0 > 4300 && period_rc_0 < 4370 && pulse_on_rc_0 > 0 && period_rc_0 > pulse_on_rc_0 ) {
 			float duty_actual = (float)pulse_on_rc_0 / (float)period_rc_0;
 			float duty_center = (float)offset_rc_0 / (float)period_rc_0;
 			norm_comm_rc_0 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
@@ -1063,7 +1063,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 		period_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 		pulse_on_rc_1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
 
-		if (period_rc_1 > 4350 && period_rc_1 < 4370 && pulse_on_rc_1 > 0 && period_rc_1 > pulse_on_rc_1) {
+		if (period_rc_1 > 4300 && period_rc_1 < 4370 && pulse_on_rc_1 > 0 && period_rc_1 > pulse_on_rc_1) {
 			float duty_actual = (float)pulse_on_rc_1 / (float)period_rc_1;
 			float duty_center = (float)offset_rc_1 / (float)period_rc_1;
 			norm_comm_rc_1 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
@@ -1079,7 +1079,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 		period_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 		pulse_on_rc_2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
 
-		if (period_rc_2 > 4350 && period_rc_2 < 4370 && pulse_on_rc_2 > 0 && period_rc_2 > pulse_on_rc_2) {
+		if (period_rc_2 > 4300 && period_rc_2 < 4370 && pulse_on_rc_2 > 0 && period_rc_2 > pulse_on_rc_2) {
 			float duty_actual = (float)pulse_on_rc_2 / (float)period_rc_2;
 			float duty_center = (float)offset_rc_2 / (float)period_rc_2;
 			norm_comm_rc_2 = (duty_actual - duty_center) / (1.0f - duty_center); // Normalize command to [-1,1]
@@ -1094,7 +1094,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 		period_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
 		pulse_on_rc_3 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2)*10;
 
-		if (period_rc_3 > 4350 && period_rc_3 < 4370 && pulse_on_rc_3 > 0 && period_rc_3 > pulse_on_rc_3) {
+		if (period_rc_3 > 4300 && period_rc_3 < 4370 && pulse_on_rc_3 > 0 && period_rc_3 > pulse_on_rc_3) {
 			float min_rc3 = (float) offset_rc_3 / (float) period_rc_3;
 			norm_comm_rc_3 = ((float) pulse_on_rc_3 / (float) period_rc_3  - min_rc3) / (1 - min_rc3); // Normalize command to [0,1]
 			rc_comm_temp.THR =  norm_comm_rc_3 * RC_FULLSCALE;
