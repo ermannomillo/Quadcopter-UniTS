@@ -7,7 +7,6 @@
 const float max_pitch_rad = PI*PITCH_MAX_DEG/180.0f;
 const float max_roll_rad = PI*ROLL_MAX_DEG/180.0f;
 const float max_yaw_rad = PI*YAW_MAX_DEG/180.0f;
-int temp;
 
 extern volatile uint32_t pulse_on_rc_0;
 extern volatile uint32_t pulse_on_rc_1;
@@ -23,10 +22,10 @@ extern uint16_t offset_rc_3;
 void get_target_euler(Euler *euler_rc, Radio *rc_comm)
 {
 	/*
-	 * Convert the RC commands to reference euler angle
+	 * Convert the RC commands into reference euler angle
 	 */
 
-	temp = rc_comm->ELE;
+	int temp = rc_comm->ELE;
 	if (temp > RC_FULLSCALE)
 		temp = RC_FULLSCALE;
 	else if (temp < -RC_FULLSCALE)
@@ -46,7 +45,7 @@ void get_target_euler(Euler *euler_rc, Radio *rc_comm)
 	else if (temp < -RC_FULLSCALE)
 		temp = - RC_FULLSCALE;
 
-	if(temp > YAW_DEAD_THRD)
+	if(temp > YAW_DEAD_THRD   )
 	{
 		euler_rc->yaw = euler_rc->yaw +  (int)(max_yaw_rad * RAD_TO_MDEG);
 	}
@@ -55,6 +54,7 @@ void get_target_euler(Euler *euler_rc, Radio *rc_comm)
 		euler_rc->yaw =  euler_rc->yaw -  (int)(max_yaw_rad * RAD_TO_MDEG);
 	}
 }
+
 
 void calibrate_rc()
 {
@@ -67,9 +67,11 @@ void calibrate_rc()
 	uint16_t sum_pulse_on_rc_2_cal = 0;
 	uint16_t sum_pulse_on_rc_3_cal = 0;
 
+
+	// Compute average of valid commands
 	int i = 0;
 	while ( i < NUM_ITERATIONS_RC_CAL) {
-		if (pulse_on_rc_0 > 3000 ) {
+		if (pulse_on_rc_0 > 1000 ) {
 			sum_pulse_on_rc_0_cal += pulse_on_rc_0;
 			i++;
 		}
@@ -79,7 +81,7 @@ void calibrate_rc()
 
 	i = 0;
 	while ( i < NUM_ITERATIONS_RC_CAL) {
-		if (pulse_on_rc_1 > 3000 ) {
+		if (pulse_on_rc_1 > 1000 ) {
 			sum_pulse_on_rc_1_cal += pulse_on_rc_1;
 			i++;
 		}
@@ -88,7 +90,7 @@ void calibrate_rc()
 
 	i = 0;
 	while ( i < NUM_ITERATIONS_RC_CAL) {
-		if (pulse_on_rc_2 > 3000 ) {
+		if (pulse_on_rc_2 > 1000 ) {
 			sum_pulse_on_rc_2_cal += pulse_on_rc_2;
 			i++;
 		}
@@ -97,7 +99,7 @@ void calibrate_rc()
 
 	i = 0;
 	while ( i < NUM_ITERATIONS_RC_CAL) {
-		if (pulse_on_rc_3 > 2000 ) {
+		if (pulse_on_rc_3 > 1000 ) {
 			sum_pulse_on_rc_3_cal += pulse_on_rc_3;
 			i++;
 		}

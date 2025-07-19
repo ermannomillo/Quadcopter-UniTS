@@ -11,7 +11,7 @@ static int prev_tick_ms = 0;
 static float alpha = 0.01;
 
 void orientation_init(void) {
-	//imu_calibrate(euler_offset, gyro_offset);
+	imu_calibrate(euler_offset, gyro_offset);
 	prev_tick_ms = HAL_GetTick();
 }
 

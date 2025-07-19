@@ -7,6 +7,9 @@ extern TIM_HandleTypeDef htim1;
 
 void set_motor_pwm(uint16_t motor_pwm[])
 {
+
+	// set motors and check from thresholds
+
 	if (motor_pwm[0] >= MOTOR_MAX_PWM)
 		htim1.Instance->CCR1 = MOTOR_MAX_PWM;
 	else if (motor_pwm[0] <= MOTOR_MIN_PWM)
@@ -57,13 +60,6 @@ void init_motors()
 
 	HAL_Delay(100);  // Wait for ESC to initialize
 
-	// Optional: set mid-throttle (1.5 ms pulse width)
-	/*
-	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 150);  // 1.5ms
-	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 150);
-	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 150);
-	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 150);
-*/
 	uint16_t motor_pwm[4];
 
 	set_motor_pwm_zero(motor_pwm);
@@ -77,9 +73,11 @@ void mixing_formula(uint16_t motor_pwm[], uint16_t motor_throttle,  PID_Out out_
 	 * Drone mixing formula
 	 */
 
-	motor_pwm[2] = motor_throttle - out_pid.pitch - out_pid.roll + out_pid.yaw; //should be the back left motor
-	motor_pwm[1] = 0.9965*(motor_throttle + out_pid.pitch - out_pid.roll - out_pid.yaw); //should be the front left motor
-	motor_pwm[0] = 0.998*(motor_throttle + out_pid.pitch + out_pid.roll + out_pid.yaw); // should be the front right motor
-	motor_pwm[3] = (motor_throttle - out_pid.pitch + out_pid.roll - out_pid.yaw); //should be the back right motor motor_throttle
+	motor_pwm[2] = motor_throttle - out_pid.pitch - out_pid.roll - out_pid.yaw;          // back left motor
+	motor_pwm[1] = 0.9965*(motor_throttle + out_pid.pitch - out_pid.roll + out_pid.yaw); // front left motor
+	motor_pwm[0] = 0.998*(motor_throttle + out_pid.pitch + out_pid.roll - out_pid.yaw);  // front right motor
+	motor_pwm[3] = (motor_throttle - out_pid.pitch + out_pid.roll + out_pid.yaw);        // back right motor
+
+
 }
 
