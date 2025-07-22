@@ -227,8 +227,8 @@ int main(void)
 	/* USER CODE BEGIN WHILE */
 
 	init_motors();
-	imu_init();
-	orientation_init(); /*saves with hal_get_tick the time instant */
+	imu_init(); // initializes the IMU
+	orientation_init(); /*saves with hal_get_tick the time instant and optionally recalibrates the IMU*/
 	calibrate_rc();
 
 	init_pid();
@@ -247,7 +247,7 @@ int main(void)
 		get_target_euler(&rc_ref_euler, &rc_comm_temp);  /* Convert rc commands into reference euler angles*/
 
 		if (imu_flag){
-			orientation_update(&imu_est_euler); /* Get estimated euler angle from IMU*/
+			orientation_update(&imu_est_euler); /* Get estimated euler angles from IMU*/
 			imu_flag = 0;
 		}
 
@@ -1040,22 +1040,26 @@ void Handle_RC_Input(TIM_HandleTypeDef *htim, uint32_t *period, uint32_t *pulse,
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
-	if (htim->Instance == TIM2 ){
+	if (htim->Instance == TIM2) {  // TIM2 runs at 200 Hz
 
 		// Timing handling
-		if(cycle_count == 3 && motor_arming_flag){
-			// Set motor with the most updated data
-			set_motor_pwm(motor_pwm);
+		if (cycle_count == 3 && motor_arming_flag) {
+			// Set the motors with the most recent data
+			set_motor_pwm(motor_pwm);   // When cycle_count == 3, update motor PWM
+			                            // This happens at 50 Hz (every 4 cycles)
 		}
 
-		imu_flag = 1;
+		imu_flag = 1;  // Set imu_flag = 1 every cycle (200 Hz)
+		               // This allows IMU data (angles) to be updated every 5 ms
+		               // Updating angles more frequently improves gyro integration accuracy
 
 		if (cycle_count == 1) {
-			pid_flag = 1;
+			pid_flag = 1;  // When cycle_count == 1 (every 200 Hz, but offset from motor update),
+			               // compute new PID values
 		}
 
-		if(cycle_count == 3) {
-			cycle_count = 0;
+		if (cycle_count == 3) {
+			cycle_count = 0;  // Reset cycle_count after reaching 3
 		} else {
 			cycle_count++;
 		}
