@@ -4,7 +4,7 @@
 #include "orientation.h"
 #include "main.h"
 
-#define RC_FULLSCALE        1000
+#define RC_FULLSCALE        10000 //1000
 #define NUM_ITERATIONS_RC_CAL 10
 #define MAX_THROTTLE_RC 0.80f
 
