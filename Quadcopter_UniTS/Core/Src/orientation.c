@@ -4,10 +4,10 @@
 #include "main.h"  // for HAL_GetTick()
 
 // Calibration offsets for accelerometer-based euler angles (roll, pitch)
-static int euler_offset[2] = {-179303, 13};
+static int euler_offset[2] = {-178961, 575};
 
 // Calibration offsets for gyroscope data
-static int gyro_offset[3] = {-80, 25, 206};
+static int gyro_offset[3] = {-74, 27, 177};
 
 // Stores current gyroscope data
 static int gyro_data[3];
@@ -43,10 +43,14 @@ void orientation_update(Euler *imu_est_euler){
 	acc_euler[1] -= euler_offset[1];
 
 	// Compute gyroscope delta values and update gyro_data
-	for (int i = 0; i < 3; i++) {
-		gyro_delta[i] = imu_raw[4 + i] - gyro_offset[i] - gyro_data[i]; // Change since last reading
-		gyro_data[i]  = imu_raw[4 + i] - gyro_offset[i];                // Current corrected value
-	}
+	gyro_delta[0] = imu_raw[4 + 0] - gyro_offset[0] - gyro_data[0]; // Change since last reading
+	gyro_data[0]  = imu_raw[4 + 0] - gyro_offset[0];                // Current corrected value
+
+	gyro_delta[1] = imu_raw[4 + 1] - gyro_offset[1] - gyro_data[1]; // Change since last reading
+	gyro_data[1]  = imu_raw[4 + 1] - gyro_offset[1];                // Current corrected value
+
+	gyro_delta[2] = imu_raw[4 + 2] - gyro_offset[2] - gyro_data[2]; // Change since last reading
+	gyro_data[2]  = imu_raw[4 + 2] - gyro_offset[2];                // Current corrected value
 
 	int euler_est[3];
 

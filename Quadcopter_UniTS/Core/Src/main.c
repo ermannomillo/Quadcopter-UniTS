@@ -86,7 +86,7 @@ static void MX_IWDG1_Init(void);
 
 Radio rc_comm_temp;
 uint16_t motor_pwm[4] = {0.0, 0.0, 0.0, 0.0};
-
+uint16_t motor_pwm_lim[4] = {0.0, 0.0, 0.0, 0.0};
 
 uint32_t period_rc_0 = 0;
 uint32_t period_rc_1 = 0;
@@ -1045,7 +1045,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		// Timing handling
 		if (cycle_count == 3 && motor_arming_flag) {
 			// Set the motors with the most recent data
-			set_motor_pwm(motor_pwm);   // When cycle_count == 3, update motor PWM
+			set_motor_pwm(motor_pwm, motor_pwm_lim);   // When cycle_count == 3, update motor PWM
 			                            // This happens at 50 Hz (every 4 cycles)
 		}
 

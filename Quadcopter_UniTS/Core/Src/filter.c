@@ -10,7 +10,7 @@ void filter_compute_gravity_angles(float gx, float gy, float gz, int euler[3]) {
 	// Calculate roll angle from gyroscope Y and Z axis
 	float roll  = atan2(gy, gz);
 	// Calculate pitch angle from gyroscope X and magnitude of Y and Z
-	float pitch = atan2(-gx, sqrt(gy * gy + gz * gz));
+	float pitch = atan2(gx, sqrt(gy * gy + gz * gz));
 
 	// Convert from radians to millidegrees and store in euler[0] and euler[1]
 	euler[0] = (int)(roll * RAD_TO_MDEG);  // Roll in millidegrees
@@ -33,6 +33,7 @@ void filter_integrate_gyro(int gyro[3], int gyro_delta[3], int euler_est[3], int
 
 		// Update estimated euler angle using trapezoidal integration
 		euler_est[i] += (int)((gyro_scaled + gyro_delta_scaled / 2.0f) * dt_imu);
+		// euler_est[i] += (int)((gyro_scaled) * dt_imu);
 	}
 }
 
